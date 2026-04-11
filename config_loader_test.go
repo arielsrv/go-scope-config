@@ -10,7 +10,10 @@ import (
 
 func TestNew(t *testing.T) {
 	// Clear environment variables for a clean test
-	os.Unsetenv(ScopeEnvVar)
+	err := os.Unsetenv(ScopeEnvVar)
+	if err != nil {
+		return
+	}
 
 	t.Run("Default ConfigLoader", func(t *testing.T) {
 		l := New()
@@ -21,7 +24,12 @@ func TestNew(t *testing.T) {
 
 	t.Run("With Environmental SCOPE", func(t *testing.T) {
 		t.Setenv(ScopeEnvVar, "prod")
-		defer os.Unsetenv(ScopeEnvVar)
+		defer func() {
+			err = os.Unsetenv(ScopeEnvVar)
+			if err != nil {
+				return
+			}
+		}()
 		l := New()
 		if l.GetScope() != "prod" {
 			t.Errorf("Expected scope prod, got %s", l.GetScope())
@@ -89,6 +97,31 @@ func TestLoad(t *testing.T) {
 		}
 	})
 
+	t.Run("Invalid YAML file", func(t *testing.T) {
+		invalidConfig := filepath.Join(tmpDir, "config.invalid.yaml")
+		if err := os.WriteFile(invalidConfig, []byte("app: - name: invalid: yaml: content:"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		l := New(WithConfigDir(tmpDir), WithScope("invalid"))
+		if err := l.Load(); err == nil {
+			t.Error("Expected error for invalid yaml content, got nil")
+		}
+	})
+
+	t.Run("Invalid common YAML file", func(t *testing.T) {
+		// New temp dir for this subtest to avoid interfering with others
+		subTmpDir := t.TempDir()
+		commonInvalid := filepath.Join(subTmpDir, "config.common.yaml")
+		if err := os.WriteFile(commonInvalid, []byte("app: - name: invalid: yaml: content:"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+
+		l := New(WithConfigDir(subTmpDir), WithScope("dev"))
+		if err := l.Load(); err == nil {
+			t.Error("Expected error for invalid common yaml content, got nil")
+		}
+	})
+
 	t.Run("Merge with common config", func(t *testing.T) {
 		// Create common config file
 		commonConfig := filepath.Join(tmpDir, "config.common.yaml")
@@ -131,6 +164,10 @@ app:
 		if host := v.GetString("database.host"); host != "localhost" {
 			t.Errorf("Expected localhost, got %s", host)
 		}
+
+		if path := l.GetConfigPath(); path == "" {
+			t.Error("Expected non-empty config path")
+		}
 	})
 }
 
@@ -172,13 +209,30 @@ func TestLoadDefault(t *testing.T) {
 	t.Chdir(tmpDir)
 
 	t.Run("LoadDefault with dev scope (default)", func(t *testing.T) {
-		os.Unsetenv(ScopeEnvVar)
+		err := os.Unsetenv(ScopeEnvVar)
+		if err != nil {
+			return
+		}
 		v, dfltErr := LoadDefault()
 		if dfltErr != nil {
 			t.Fatalf("LoadDefault failed: %v", dfltErr)
 		}
 		if name := v.GetString("app.name"); name != "default-dev" {
 			t.Errorf("Expected default-dev, got %s", name)
+		}
+	})
+
+	t.Run("LoadDefault with error (missing directory)", func(t *testing.T) {
+		// Change to an empty temporary directory
+		otherTmp := t.TempDir()
+		t.Chdir(otherTmp)
+
+		v, dfltErr := LoadDefault()
+		if dfltErr == nil {
+			t.Error("Expected error when loading default config from empty directory, got nil")
+		}
+		if v != nil {
+			t.Error("Expected nil Viper instance on error")
 		}
 	})
 }
