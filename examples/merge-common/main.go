@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 
 	goscopeconfig "github.com/arielsrv/go-scope-config"
 )
 
 func main() {
+	// Local logger to avoid using the global slog
+	logger := slog.Default()
+
 	// Set SCOPE to prod to see merging and overriding in action
 	os.Setenv("SCOPE", "prod")
 
@@ -16,7 +19,8 @@ func main() {
 	loader := goscopeconfig.New(goscopeconfig.WithConfigDir("examples/merge-common/configs"))
 
 	if err := loader.Load(); err != nil {
-		log.Fatalf("Error loading config: %v", err)
+		logger.Error("Error loading config", "error", err)
+		os.Exit(1)
 	}
 
 	v := loader.Viper()

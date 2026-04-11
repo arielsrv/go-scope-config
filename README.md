@@ -40,15 +40,20 @@ package main
 
 import (
     "fmt"
-    "log"
+    "log/slog"
+    "os"
     goscopeconfig "github.com/arielsrv/go-scope-config"
 )
 
 func main() {
+    // Local logger to avoid using the global slog
+    logger := slog.Default()
+
     // Loads from "config/" folder using SCOPE env var (defaults to "dev")
     v, err := goscopeconfig.LoadDefault()
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        logger.Error("Error loading default config", "error", err)
+        os.Exit(1)
     }
 
     fmt.Printf("App Name: %s\n", v.GetString("app.name"))
@@ -68,13 +73,19 @@ package main
 
 import (
     "fmt"
+    "log/slog"
+    "os"
     goscopeconfig "github.com/arielsrv/go-scope-config"
 )
 
 func main() {
+    // Local logger to avoid using the global slog
+    logger := slog.Default()
+
     // Check if there was an error during automatic loading
     if goscopeconfig.LoadError != nil {
-        panic(goscopeconfig.LoadError)
+        logger.Error("Error loading config", "error", goscopeconfig.LoadError)
+        os.Exit(1)
     }
 
     // Use the pre-loaded instance
@@ -109,11 +120,15 @@ package main
 
 import (
     "fmt"
-    "log"
+    "log/slog"
+    "os"
     goscopeconfig "github.com/arielsrv/go-scope-config"
 )
 
 func main() {
+    // Local logger to avoid using the global slog
+    logger := slog.Default()
+
     // Initializes the loader. 
     // By default, it looks in the "config/" folder and reads the "SCOPE" environment variable.
     loader := goscopeconfig.New()
@@ -122,7 +137,8 @@ func main() {
     // loader := goscopeconfig.New(goscopeconfig.WithConfigDir("custom_configs"))
 
     if err := loader.Load(); err != nil {
-        log.Fatalf("Error loading config: %v", err)
+        logger.Error("Error loading config", "error", err)
+        os.Exit(1)
     }
 
     // Access values via Viper
@@ -164,6 +180,30 @@ go run examples/automatic/main.go
 ### Run automatic autoloader example (blank import)
 ```bash
 go run examples/blank-import/main.go
+```
+
+### Run example with logger (slog JSON)
+```bash
+go run examples/with-logger/main.go
+```
+
+## Logger Support
+
+You can provide a logger that satisfies the `Logger` interface (which has a `Printf(format string, v ...any)` method). This allows easy integration with both the standard `log` package and modern loggers like `slog`.
+
+```go
+// Example with slog (JSON format)
+handler := slog.NewJSONHandler(os.Stdout, nil)
+logger := slog.New(handler)
+
+// Small wrapper to satisfy the Printf interface
+type slogWrapper struct { logger *slog.Logger }
+func (s *slogWrapper) Printf(f string, v ...any) { s.logger.Info(fmt.Sprintf(f, v...)) }
+
+loader := goscopeconfig.New(
+    goscopeconfig.WithLogger(&slogWrapper{logger: logger}),
+)
+loader.Load()
 ```
 
 ## Environment Variables

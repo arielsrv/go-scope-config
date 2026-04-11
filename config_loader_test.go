@@ -1,8 +1,10 @@
 package goscopeconfig
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/spf13/viper"
@@ -169,6 +171,59 @@ app:
 			t.Error("Expected non-empty config path")
 		}
 	})
+
+	t.Run("With logger", func(t *testing.T) {
+		mockLogger := &mockLogger{}
+		commonConfig := filepath.Join(tmpDir, "config.common.yaml")
+		if err := os.WriteFile(commonConfig, []byte("app:\n  base: true\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+
+		l := New(WithConfigDir(tmpDir), WithScope("dev"), WithLogger(mockLogger))
+		if err := l.Load(); err != nil {
+			t.Fatalf("Could not load configuration: %v", err)
+		}
+
+		if len(mockLogger.messages) < 2 {
+			t.Errorf("Expected at least 2 log messages, got %d", len(mockLogger.messages))
+		}
+
+		foundCommon := false
+		foundScope := false
+		for _, msg := range mockLogger.messages {
+			if filepath.Base(msg) == "config.common.yaml" || filepath.Base(msg) == "config.common" {
+				// The message contains the full path, so we check if it contains common
+				foundCommon = true
+			}
+			// Printf format: "Loaded common configuration from: %s"
+			// and "Loaded scope-specific configuration (%s) from: %s"
+		}
+
+		// Re-checking more specifically
+		for _, msg := range mockLogger.messages {
+			if strings.Contains(msg, "Loaded common configuration") {
+				foundCommon = true
+			}
+			if strings.Contains(msg, "Loaded scope-specific configuration (dev)") {
+				foundScope = true
+			}
+		}
+
+		if !foundCommon {
+			t.Error("Expected log message for common configuration")
+		}
+		if !foundScope {
+			t.Error("Expected log message for scope-specific configuration")
+		}
+	})
+}
+
+type mockLogger struct {
+	messages []string
+}
+
+func (m *mockLogger) Printf(format string, v ...any) {
+	m.messages = append(m.messages, fmt.Sprintf(format, v...))
 }
 
 func TestDefaultViper(t *testing.T) {

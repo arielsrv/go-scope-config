@@ -2,12 +2,16 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
+	"os"
 
 	goscopeconfig "github.com/arielsrv/go-scope-config"
 )
 
 func main() {
+	// Local logger to avoid using the global slog
+	logger := slog.Default()
+
 	// We force a directory and a specific scope for this example
 	loader := goscopeconfig.New(
 		goscopeconfig.WithConfigDir("examples/custom-dir/configs"),
@@ -15,7 +19,8 @@ func main() {
 	)
 
 	if err := loader.Load(); err != nil {
-		log.Fatalf("Error loading config: %v", err)
+		logger.Error("Error loading config", "error", err)
+		os.Exit(1)
 	}
 
 	v := loader.Viper()

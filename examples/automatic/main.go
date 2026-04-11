@@ -2,18 +2,23 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
+	"os"
 
 	// Importing the package initializes DefaultViper via init().
 	goscopeconfig "github.com/arielsrv/go-scope-config"
 )
 
 func main() {
+	// Local logger to avoid using the global slog
+	logger := slog.Default()
+
 	fmt.Println("--- Automatic Autoloader Example ---")
 
 	// Check if there was an error during automatic loading
 	if goscopeconfig.ErrLoad != nil {
-		log.Fatalf("Error loading automatic config: %v", goscopeconfig.ErrLoad)
+		logger.Error("Error loading automatic config", "error", goscopeconfig.ErrLoad)
+		os.Exit(1)
 	}
 
 	// Access the pre-loaded Viper instance

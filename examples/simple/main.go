@@ -2,17 +2,22 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
+	"os"
 
 	goscopeconfig "github.com/arielsrv/go-scope-config"
 )
 
 func main() {
+	// Local logger to avoid using the global slog
+	logger := slog.Default()
+
 	// SCOPE=dev by default if not defined
 	loader := goscopeconfig.New()
 
 	if err := loader.Load(); err != nil {
-		log.Fatalf("Error loading config: %v", err)
+		logger.Error("Error loading config", "error", err)
+		os.Exit(1)
 	}
 
 	v := loader.Viper()

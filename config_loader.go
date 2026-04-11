@@ -18,10 +18,17 @@ const (
 
 // ConfigLoader handles loading configurations based on the scope.
 type ConfigLoader struct {
-	v          *viper.Viper
+	logger     Logger
+	viper      *viper.Viper
 	configDir  string
 	scope      string
 	configPath string
+}
+
+// Logger is a simple interface for logging.
+// Many logging libraries satisfy this interface (e.g., standard [log.Logger], logrus).
+type Logger interface {
+	Printf(format string, v ...any)
 }
 
 // Option defines a function to configure the ConfigLoader.
@@ -41,15 +48,22 @@ func WithScope(scope string) Option {
 	}
 }
 
+// WithLogger allows providing a logger to show loaded files.
+func WithLogger(logger Logger) Option {
+	return func(l *ConfigLoader) {
+		l.logger = logger
+	}
+}
+
 // New creates a new ConfigLoader instance with the provided options.
 func New(opts ...Option) *ConfigLoader {
 	return NewWithViper(viper.New(), opts...)
 }
 
 // NewWithViper creates a new ConfigLoader instance using a specific Viper instance.
-func NewWithViper(v *viper.Viper, opts ...Option) *ConfigLoader {
+func NewWithViper(viper *viper.Viper, opts ...Option) *ConfigLoader {
 	l := &ConfigLoader{
-		v:         v,
+		viper:     viper,
 		configDir: DefaultConfigDir,
 	}
 
@@ -71,32 +85,39 @@ func NewWithViper(v *viper.Viper, opts ...Option) *ConfigLoader {
 // Load loads the configuration according to the current scope.
 // It looks for config.common.yaml/yml first and then merges with config.[scope].yaml/yml.
 // The scope-specific configuration overrides values in the common one.
-func (l *ConfigLoader) Load() error {
-	l.v.SetConfigType("yaml") // Viper automatically supports yaml and yml if yaml is specified as the type
-	l.v.AddConfigPath(l.configDir)
+func (r *ConfigLoader) Load() error {
+	r.viper.SetConfigType("yaml") // Viper automatically supports yaml and yml if yaml is specified as the type
+	r.viper.AddConfigPath(r.configDir)
 
 	// We also allow reading from general environment variables
-	l.v.AutomaticEnv()
-	l.v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	r.viper.AutomaticEnv()
+	r.viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	// 1. Try to load config.common.yaml
-	l.v.SetConfigName(CommonConfigName)
-	if err := l.v.ReadInConfig(); err != nil {
+	r.viper.SetConfigName(CommonConfigName)
+	if err := r.viper.ReadInConfig(); err != nil {
 		// It's okay if the common config doesn't exist
 		if _, ok := errors.AsType[viper.ConfigFileNotFoundError](err); !ok {
 			return fmt.Errorf("error reading common configuration: %w", err)
 		}
+	} else {
+		if r.logger != nil {
+			r.logger.Printf("Loaded common configuration from: %s", r.viper.ConfigFileUsed())
+		}
 	}
 
 	// 2. Merge with config.[scope].yaml
-	scopeConfigName := fmt.Sprintf("config.%s", l.scope)
-	l.v.SetConfigName(scopeConfigName)
+	scopeConfigName := fmt.Sprintf("config.%s", r.scope)
+	r.viper.SetConfigName(scopeConfigName)
 
-	if err := l.v.MergeInConfig(); err != nil {
-		return fmt.Errorf("error merging configuration file for scope %s in %s: %w", l.scope, l.configDir, err)
+	if err := r.viper.MergeInConfig(); err != nil {
+		return fmt.Errorf("error merging configuration file for scope %s in %s: %w", r.scope, r.configDir, err)
 	}
 
-	l.configPath = l.v.ConfigFileUsed()
+	r.configPath = r.viper.ConfigFileUsed()
+	if r.logger != nil {
+		r.logger.Printf("Loaded scope-specific configuration (%s) from: %s", r.scope, r.configPath)
+	}
 	return nil
 }
 
@@ -124,16 +145,16 @@ func LoadDefault() (*viper.Viper, error) {
 }
 
 // Viper returns the internal viper instance to access values.
-func (l *ConfigLoader) Viper() *viper.Viper {
-	return l.v
+func (r *ConfigLoader) Viper() *viper.Viper {
+	return r.viper
 }
 
 // GetScope returns the current scope being used.
-func (l *ConfigLoader) GetScope() string {
-	return l.scope
+func (r *ConfigLoader) GetScope() string {
+	return r.scope
 }
 
 // GetConfigPath returns the absolute path of the loaded configuration file (the scope-specific one).
-func (l *ConfigLoader) GetConfigPath() string {
-	return l.configPath
+func (r *ConfigLoader) GetConfigPath() string {
+	return r.configPath
 }
