@@ -100,7 +100,8 @@ func (r *ConfigLoader) Load() error {
 
 	// 1. Try to load config.common.yaml
 	r.viper.SetConfigName(defaultConfig.CommonName)
-	if err := r.viper.ReadInConfig(); err != nil {
+	err := r.viper.ReadInConfig()
+	if err != nil {
 		// It's okay if the common config doesn't exist
 		if _, ok := errors.AsType[viper.ConfigFileNotFoundError](err); !ok {
 			return fmt.Errorf("error reading common configuration: %w", err)
@@ -115,7 +116,8 @@ func (r *ConfigLoader) Load() error {
 	scopeConfigName := fmt.Sprintf("config.%s", r.scope)
 	r.viper.SetConfigName(scopeConfigName)
 
-	if err := r.viper.MergeInConfig(); err != nil {
+	err = r.viper.MergeInConfig()
+	if err != nil {
 		return fmt.Errorf("error merging configuration file for scope %s in %s: %w", r.scope, r.configDir, err)
 	}
 
@@ -143,7 +145,8 @@ func init() {
 // This is useful for quick starts where default behavior is enough.
 func LoadDefault() (*viper.Viper, error) {
 	l := New()
-	if err := l.Load(); err != nil {
+	err := l.Load()
+	if err != nil {
 		return nil, err
 	}
 	return l.Viper(), nil

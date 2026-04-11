@@ -18,7 +18,8 @@ func main() {
 	// Initialize the loader pointing to the examples/merge-common/configs folder
 	loader := goscopeconfig.New(goscopeconfig.WithConfigDir("examples/merge-common/configs"))
 
-	if err := loader.Load(); err != nil {
+	err := loader.Load()
+	if err != nil {
 		logger.Error("Error loading config", "error", err)
 		os.Exit(1)
 	}

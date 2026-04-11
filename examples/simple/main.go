@@ -15,7 +15,8 @@ func main() {
 	// SCOPE=dev by default if not defined
 	loader := goscopeconfig.New()
 
-	if err := loader.Load(); err != nil {
+	err := loader.Load()
+	if err != nil {
 		logger.Error("Error loading config", "error", err)
 		os.Exit(1)
 	}

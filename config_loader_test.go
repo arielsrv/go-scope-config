@@ -63,18 +63,21 @@ func TestLoad(t *testing.T) {
 
 	// Create test configuration files
 	devConfig := filepath.Join(tmpDir, "config.dev.yaml")
-	if err := os.WriteFile(devConfig, []byte("app:\n  name: test-dev\n"), 0o644); err != nil {
+	err := os.WriteFile(devConfig, []byte("app:\n  name: test-dev\n"), 0o644)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	prodConfig := filepath.Join(tmpDir, "config.prod.yml")
-	if err := os.WriteFile(prodConfig, []byte("app:\n  name: test-prod\n"), 0o644); err != nil {
+	err = os.WriteFile(prodConfig, []byte("app:\n  name: test-prod\n"), 0o644)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	t.Run("Load dev config", func(t *testing.T) {
 		l := New(WithConfigDir(tmpDir), WithScope("dev"))
-		if err := l.Load(); err != nil {
+		err = l.Load()
+		if err != nil {
 			t.Fatalf("Could not load configuration: %v", err)
 		}
 		if name := l.Viper().GetString("app.name"); name != "test-dev" {
@@ -84,7 +87,8 @@ func TestLoad(t *testing.T) {
 
 	t.Run("Load prod config (yml extension)", func(t *testing.T) {
 		l := New(WithConfigDir(tmpDir), WithScope("prod"))
-		if err := l.Load(); err != nil {
+		err = l.Load()
+		if err != nil {
 			t.Fatalf("Could not load configuration: %v", err)
 		}
 		if name := l.Viper().GetString("app.name"); name != "test-prod" {
@@ -94,18 +98,21 @@ func TestLoad(t *testing.T) {
 
 	t.Run("Config not found error", func(t *testing.T) {
 		l := New(WithConfigDir(tmpDir), WithScope("missing"))
-		if err := l.Load(); err == nil {
+		err = l.Load()
+		if err == nil {
 			t.Error("An error was expected when the configuration file does not exist")
 		}
 	})
 
 	t.Run("Invalid YAML file", func(t *testing.T) {
 		invalidConfig := filepath.Join(tmpDir, "config.invalid.yaml")
-		if err := os.WriteFile(invalidConfig, []byte("app: - name: invalid: yaml: content:"), 0o644); err != nil {
+		err = os.WriteFile(invalidConfig, []byte("app: - name: invalid: yaml: content:"), 0o644)
+		if err != nil {
 			t.Fatal(err)
 		}
 		l := New(WithConfigDir(tmpDir), WithScope("invalid"))
-		if err := l.Load(); err == nil {
+		err = l.Load()
+		if err == nil {
 			t.Error("Expected error for invalid yaml content, got nil")
 		}
 	})
@@ -114,12 +121,14 @@ func TestLoad(t *testing.T) {
 		// New temp dir for this subtest to avoid interfering with others
 		subTmpDir := t.TempDir()
 		commonInvalid := filepath.Join(subTmpDir, "config.common.yaml")
-		if err := os.WriteFile(commonInvalid, []byte("app: - name: invalid: yaml: content:"), 0o644); err != nil {
+		err = os.WriteFile(commonInvalid, []byte("app: - name: invalid: yaml: content:"), 0o644)
+		if err != nil {
 			t.Fatal(err)
 		}
 
 		l := New(WithConfigDir(subTmpDir), WithScope("dev"))
-		if err := l.Load(); err == nil {
+		err = l.Load()
+		if err == nil {
 			t.Error("Expected error for invalid common yaml content, got nil")
 		}
 	})
@@ -134,7 +143,8 @@ app:
 database:
   host: localhost
 `
-		if err := os.WriteFile(commonConfig, []byte(commonContent), 0o644); err != nil {
+		err = os.WriteFile(commonConfig, []byte(commonContent), 0o644)
+		if err != nil {
 			t.Fatal(err)
 		}
 
@@ -144,12 +154,14 @@ database:
 app:
   name: dev-app
 `
-		if err := os.WriteFile(devConfig, []byte(devContent), 0o644); err != nil {
+		err = os.WriteFile(devConfig, []byte(devContent), 0o644)
+		if err != nil {
 			t.Fatal(err)
 		}
 
 		l := New(WithConfigDir(tmpDir), WithScope("dev"))
-		if err := l.Load(); err != nil {
+		err = l.Load()
+		if err != nil {
 			t.Fatalf("Could not load configuration: %v", err)
 		}
 
@@ -175,12 +187,14 @@ app:
 	t.Run("With logger", func(t *testing.T) {
 		mockLogger := &mockLogger{}
 		commonConfig := filepath.Join(tmpDir, "config.common.yaml")
-		if err := os.WriteFile(commonConfig, []byte("app:\n  base: true\n"), 0o644); err != nil {
+		err = os.WriteFile(commonConfig, []byte("app:\n  base: true\n"), 0o644)
+		if err != nil {
 			t.Fatal(err)
 		}
 
 		l := New(WithConfigDir(tmpDir), WithScope("dev"), WithLogger(mockLogger))
-		if err := l.Load(); err != nil {
+		err = l.Load()
+		if err != nil {
 			t.Fatalf("Could not load configuration: %v", err)
 		}
 
@@ -250,12 +264,14 @@ func TestLoadDefault(t *testing.T) {
 
 	// LoadDefault uses defaultConfig.ConfigDir ("config")
 	configDir := filepath.Join(tmpDir, defaultConfig.ConfigDir)
-	if err := os.MkdirAll(configDir, 0o755); err != nil {
+	err := os.MkdirAll(configDir, 0o755)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	devConfig := filepath.Join(configDir, "config.dev.yaml")
-	if err := os.WriteFile(devConfig, []byte("app:\n  name: default-dev\n"), 0o644); err != nil {
+	err = os.WriteFile(devConfig, []byte("app:\n  name: default-dev\n"), 0o644)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -264,7 +280,7 @@ func TestLoadDefault(t *testing.T) {
 	t.Chdir(tmpDir)
 
 	t.Run("LoadDefault with dev scope (default)", func(t *testing.T) {
-		err := os.Unsetenv(defaultConfig.ScopeEnv)
+		err = os.Unsetenv(defaultConfig.ScopeEnv)
 		if err != nil {
 			return
 		}

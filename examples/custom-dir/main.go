@@ -18,7 +18,8 @@ func main() {
 		goscopeconfig.WithScope("staging"),
 	)
 
-	if err := loader.Load(); err != nil {
+	err := loader.Load()
+	if err != nil {
 		logger.Error("Error loading config", "error", err)
 		os.Exit(1)
 	}

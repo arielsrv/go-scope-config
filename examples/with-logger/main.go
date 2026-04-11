@@ -30,7 +30,8 @@ func main() {
 		goscopeconfig.WithLogger(&slogWrapper{logger: logger}),
 	)
 
-	if err := loader.Load(); err != nil {
+	err := loader.Load()
+	if err != nil {
 		logger.Error("Error loading config", "error", err)
 		os.Exit(1)
 	}
