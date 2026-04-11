@@ -2,6 +2,10 @@
 
 Go package for loading environment-based configurations (`SCOPE`) using [Viper](https://github.com/spf13/viper).
 
+This package is particularly well-suited for **Kubernetes** environments, where the `SCOPE` variable (e.g., `dev`, `staging`, `prod`) can be easily injected into Pods as an environment variable, allowing the application to automatically pick the correct configuration file based on the cluster environment.
+
+In the future, the environment variable name (`SCOPE`) could be made configurable to support different organizational standards.
+
 ## Installation
 
 ```bash
