@@ -9,12 +9,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	DefaultConfigDir = "config"
-	DefaultScope     = "dev"
-	ScopeEnvVar      = "SCOPE"
-	CommonConfigName = "config.common"
-)
+var defaultConfig = struct {
+	ConfigDir  string
+	Scope      string
+	ScopeEnv   string
+	CommonName string
+}{
+	ConfigDir:  "config",
+	Scope:      "dev",
+	ScopeEnv:   "SCOPE",
+	CommonName: "config.common",
+}
 
 // ConfigLoader handles loading configurations based on the scope.
 type ConfigLoader struct {
@@ -64,7 +69,7 @@ func New(opts ...Option) *ConfigLoader {
 func NewWithViper(viper *viper.Viper, opts ...Option) *ConfigLoader {
 	l := &ConfigLoader{
 		viper:     viper,
-		configDir: DefaultConfigDir,
+		configDir: defaultConfig.ConfigDir,
 	}
 
 	for _, opt := range opts {
@@ -73,9 +78,9 @@ func NewWithViper(viper *viper.Viper, opts ...Option) *ConfigLoader {
 
 	// If the scope was not forced via Option, we look for it in the environment.
 	if l.scope == "" {
-		l.scope = strings.ToLower(os.Getenv(ScopeEnvVar))
+		l.scope = strings.ToLower(os.Getenv(defaultConfig.ScopeEnv))
 		if l.scope == "" {
-			l.scope = DefaultScope
+			l.scope = defaultConfig.Scope
 		}
 	}
 
@@ -94,7 +99,7 @@ func (r *ConfigLoader) Load() error {
 	r.viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	// 1. Try to load config.common.yaml
-	r.viper.SetConfigName(CommonConfigName)
+	r.viper.SetConfigName(defaultConfig.CommonName)
 	if err := r.viper.ReadInConfig(); err != nil {
 		// It's okay if the common config doesn't exist
 		if _, ok := errors.AsType[viper.ConfigFileNotFoundError](err); !ok {

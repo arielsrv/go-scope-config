@@ -12,22 +12,22 @@ import (
 
 func TestNew(t *testing.T) {
 	// Clear environment variables for a clean test
-	err := os.Unsetenv(ScopeEnvVar)
+	err := os.Unsetenv(defaultConfig.ScopeEnv)
 	if err != nil {
 		return
 	}
 
 	t.Run("Default ConfigLoader", func(t *testing.T) {
 		l := New()
-		if l.GetScope() != DefaultScope {
-			t.Errorf("Expected scope %s, got %s", DefaultScope, l.GetScope())
+		if l.GetScope() != defaultConfig.Scope {
+			t.Errorf("Expected scope %s, got %s", defaultConfig.Scope, l.GetScope())
 		}
 	})
 
 	t.Run("With Environmental SCOPE", func(t *testing.T) {
-		t.Setenv(ScopeEnvVar, "prod")
+		t.Setenv(defaultConfig.ScopeEnv, "prod")
 		defer func() {
-			err = os.Unsetenv(ScopeEnvVar)
+			err = os.Unsetenv(defaultConfig.ScopeEnv)
 			if err != nil {
 				return
 			}
@@ -248,8 +248,8 @@ func TestLoadDefault(t *testing.T) {
 	// Create a temporary directory and configuration files for the test
 	tmpDir := t.TempDir()
 
-	// LoadDefault uses DefaultConfigDir ("config")
-	configDir := filepath.Join(tmpDir, DefaultConfigDir)
+	// LoadDefault uses defaultConfig.ConfigDir ("config")
+	configDir := filepath.Join(tmpDir, defaultConfig.ConfigDir)
 	if err := os.MkdirAll(configDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -264,7 +264,7 @@ func TestLoadDefault(t *testing.T) {
 	t.Chdir(tmpDir)
 
 	t.Run("LoadDefault with dev scope (default)", func(t *testing.T) {
-		err := os.Unsetenv(ScopeEnvVar)
+		err := os.Unsetenv(defaultConfig.ScopeEnv)
 		if err != nil {
 			return
 		}
