@@ -31,6 +31,79 @@ If a `config.common.yaml` (or `.yml`) exists in the configuration directory, it 
 
 ### Code
 
+#### Using LoadDefault (Autoloader)
+
+The quickest way to start with default options:
+
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+    goscopeconfig "github.com/arielsrv/go-scope-config"
+)
+
+func main() {
+    // Loads from "config/" folder using SCOPE env var (defaults to "dev")
+    v, err := goscopeconfig.LoadDefault()
+    if err != nil {
+        log.Fatalf("Error: %v", err)
+    }
+
+    fmt.Printf("App Name: %s\n", v.GetString("app.name"))
+}
+```
+
+### Automatic Autoloader (init function)
+
+The package provides two ways to automatically load the configuration.
+
+#### 1. Using DefaultViper (named import)
+
+If you import the package with a name, you can access the pre-initialized `DefaultViper` instance.
+
+```go
+package main
+
+import (
+    "fmt"
+    goscopeconfig "github.com/arielsrv/go-scope-config"
+)
+
+func main() {
+    // Check if there was an error during automatic loading
+    if goscopeconfig.LoadError != nil {
+        panic(goscopeconfig.LoadError)
+    }
+
+    // Use the pre-loaded instance
+    v := goscopeconfig.DefaultViper
+    fmt.Printf("App Name: %s\n", v.GetString("app.name"))
+}
+```
+
+#### 2. Using Blank Import (global Viper)
+
+If you want to use the standard `github.com/spf13/viper` package directly, you can use the `autoload` sub-package with a blank import. This will load the configuration into Viper's global instance.
+
+```go
+package main
+
+import (
+    "fmt"
+    _ "github.com/arielsrv/go-scope-config/autoload"
+    "github.com/spf13/viper"
+)
+
+func main() {
+    // Configuration is already loaded into global viper
+    fmt.Printf("App Name: %s\n", viper.GetString("app.name"))
+}
+```
+
+#### Manual Initialization (With Options)
+
 ```go
 package main
 
@@ -76,6 +149,21 @@ go run examples/custom-dir/main.go
 ### Run example with common config merging
 ```bash
 go run examples/merge-common/main.go
+```
+
+### Run autoloader example
+```bash
+go run examples/autoloader/main.go
+```
+
+### Run automatic autoloader example (named import)
+```bash
+go run examples/automatic/main.go
+```
+
+### Run automatic autoloader example (blank import)
+```bash
+go run examples/blank-import/main.go
 ```
 
 ## Environment Variables

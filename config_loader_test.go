@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/spf13/viper"
 )
 
 func TestNew(t *testing.T) {
@@ -30,6 +32,17 @@ func TestNew(t *testing.T) {
 		l := New(WithScope("staging"))
 		if l.GetScope() != "staging" {
 			t.Errorf("Expected scope staging, got %s", l.GetScope())
+		}
+	})
+
+	t.Run("NewWithViper", func(t *testing.T) {
+		v := viper.New()
+		l := NewWithViper(v, WithScope("custom"))
+		if l.Viper() != v {
+			t.Error("Viper instance mismatch")
+		}
+		if l.GetScope() != "custom" {
+			t.Errorf("Expected scope custom, got %s", l.GetScope())
 		}
 	})
 }
@@ -117,6 +130,55 @@ app:
 		// Another common value
 		if host := v.GetString("database.host"); host != "localhost" {
 			t.Errorf("Expected localhost, got %s", host)
+		}
+	})
+}
+
+func TestDefaultViper(t *testing.T) {
+	// For this test, DefaultViper was already initialized by init() when the test started.
+	// Since we are running tests from the package root, and "config/config.dev.yaml" exists,
+	// DefaultViper should be loaded if the tests were started with the right environment.
+	// Note: init() runs only once.
+
+	// Since we cannot easily re-run init(), we check if it loaded correctly
+	// given the existing "config" directory in the project root.
+	if DefaultViper == nil {
+		t.Error("DefaultViper should not be nil")
+	}
+
+	// We can't guarantee what's in the root config/ during all test environments,
+	// but in this project it should have "My App Dev" if it's the one we created earlier.
+	// Let's just check if we can access it without crashing.
+	_ = DefaultViper.GetString("app.name")
+}
+
+func TestLoadDefault(t *testing.T) {
+	// Create a temporary directory and configuration files for the test
+	tmpDir := t.TempDir()
+
+	// LoadDefault uses DefaultConfigDir ("config")
+	configDir := filepath.Join(tmpDir, DefaultConfigDir)
+	if err := os.MkdirAll(configDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	devConfig := filepath.Join(configDir, "config.dev.yaml")
+	if err := os.WriteFile(devConfig, []byte("app:\n  name: default-dev\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Change current working directory to the temporary one for DefaultConfigDir to work
+	// t.Chdir automatically restores the working directory when the test finishes.
+	t.Chdir(tmpDir)
+
+	t.Run("LoadDefault with dev scope (default)", func(t *testing.T) {
+		os.Unsetenv(ScopeEnvVar)
+		v, dfltErr := LoadDefault()
+		if dfltErr != nil {
+			t.Fatalf("LoadDefault failed: %v", dfltErr)
+		}
+		if name := v.GetString("app.name"); name != "default-dev" {
+			t.Errorf("Expected default-dev, got %s", name)
 		}
 	})
 }

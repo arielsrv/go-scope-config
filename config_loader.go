@@ -43,8 +43,13 @@ func WithScope(scope string) Option {
 
 // New creates a new ConfigLoader instance with the provided options.
 func New(opts ...Option) *ConfigLoader {
+	return NewWithViper(viper.New(), opts...)
+}
+
+// NewWithViper creates a new ConfigLoader instance using a specific Viper instance.
+func NewWithViper(v *viper.Viper, opts ...Option) *ConfigLoader {
 	l := &ConfigLoader{
-		v:         viper.New(),
+		v:         v,
 		configDir: DefaultConfigDir,
 	}
 
@@ -93,6 +98,29 @@ func (l *ConfigLoader) Load() error {
 
 	l.configPath = l.v.ConfigFileUsed()
 	return nil
+}
+
+var (
+	// DefaultViper is the automatically loaded Viper instance.
+	// It is initialized during package loading via init().
+	DefaultViper *viper.Viper
+	// ErrLoad stores any error encountered during automatic loading.
+	ErrLoad error
+)
+
+func init() {
+	DefaultViper, ErrLoad = LoadDefault()
+}
+
+// LoadDefault is a shortcut that creates a new ConfigLoader with default options,
+// loads the configuration, and returns the internal Viper instance.
+// This is useful for quick starts where default behavior is enough.
+func LoadDefault() (*viper.Viper, error) {
+	l := New()
+	if err := l.Load(); err != nil {
+		return nil, err
+	}
+	return l.Viper(), nil
 }
 
 // Viper returns the internal viper instance to access values.
