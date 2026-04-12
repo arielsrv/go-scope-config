@@ -7,8 +7,8 @@ the `SCOPE` variable (e.g., `dev`, `staging`, `prod`) can be easily injected
 into Pods as an environment variable, allowing the application to automatically
 pick the correct configuration file based on the cluster environment.
 
-In the future, the environment variable name (`SCOPE`) could be made
-configurable to support different organizational standards.
+The environment variable name (`SCOPE`) is configurable to support different
+organizational standards.
 
 ## Installation
 
@@ -96,8 +96,8 @@ func main() {
     logger := slog.Default()
 
     // Check if there was an error during automatic loading
-    if goscopeconfig.LoadError != nil {
-        logger.Error("Error loading config", "error", goscopeconfig.LoadError)
+    if goscopeconfig.ErrLoad != nil {
+        logger.Error("Error loading config", "error", goscopeconfig.ErrLoad)
         os.Exit(1)
     }
 
@@ -147,10 +147,10 @@ func main() {
     // Initializes the loader. 
     // By default, it looks in the "config/" folder and reads the
     // "SCOPE" environment variable.
-    loader := goscopeconfig.New()
-
-    // Optionally, you can configure a custom path
-    // loader := goscopeconfig.New(goscopeconfig.WithConfigDir("custom_configs"))
+    loader := goscopeconfig.New(
+        goscopeconfig.WithConfigDir("custom_configs"),
+        goscopeconfig.WithScopeEnv("APP_ENV"), // use custom environment variable for scope
+    )
 
     if err := loader.Load(); err != nil {
         logger.Error("Error loading config", "error", err)
@@ -208,6 +208,12 @@ go run examples/blank-import/main.go
 
 ```bash
 go run examples/with-logger/main.go
+```
+
+### Run example with custom scope environment variable
+
+```bash
+go run examples/custom-scope-env/main.go
 ```
 
 ## Logger Support
