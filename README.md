@@ -149,7 +149,7 @@ func main() {
     // "SCOPE" environment variable.
     loader := goscopeconfig.New(
         goscopeconfig.WithConfigDir("custom_configs"),
-        goscopeconfig.WithScopeEnv("APP_ENV"), // use custom environment variable for scope
+        goscopeconfig.WithScopeEnv("APP_ENV"),
     )
 
     if err := loader.Load(); err != nil {
@@ -191,8 +191,8 @@ go run uber-fx/main.go
 ```
 
 ## Logger Support
- 
- You can provide a logger that satisfies the `Logger` interface (which has a
+
+You can provide a logger that satisfies the `Logger` interface (which has a
 `Printf(format string, v ...any)` method). This allows easy integration with
 both the standard `log` package and modern loggers like `slog`.
 
