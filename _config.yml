@@ -29,3 +29,6 @@ exclude:
   - Makefile
   - .golangci.yml
   - .mockery.yaml
+
+include:
+  - README.md
