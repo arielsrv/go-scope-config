@@ -285,6 +285,7 @@ The project documentation is also available as a [GitHub Pages site](https://ari
 
 > [!NOTE]
 > To enable GitHub Pages for your fork:
+>
 > 1. Go to **Settings > Pages**.
 > 2. Under **Build and deployment > Source**, select **GitHub Actions**.
 
