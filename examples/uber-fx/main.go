@@ -16,7 +16,7 @@ import (
 // NewConfigLoader provides the configuration loader.
 func NewConfigLoader() (*viper.Viper, error) {
 	loader := goscopeconfig.New(
-		goscopeconfig.WithConfigDir("examples/uber-fx/config"),
+		goscopeconfig.WithConfigDir("uber-fx/config"),
 	)
 	err := loader.Load()
 	if err != nil {

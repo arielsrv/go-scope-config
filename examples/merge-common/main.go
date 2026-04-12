@@ -15,8 +15,8 @@ func main() {
 	// Set SCOPE to prod to see merging and overriding in action
 	os.Setenv("SCOPE", "prod")
 
-	// Initialize the loader pointing to the examples/merge-common/configs folder
-	loader := goscopeconfig.New(goscopeconfig.WithConfigDir("examples/merge-common/configs"))
+	// Initialize the loader pointing to the merge-common/configs folder
+	loader := goscopeconfig.New(goscopeconfig.WithConfigDir("merge-common/configs"))
 
 	err := loader.Load()
 	if err != nil {

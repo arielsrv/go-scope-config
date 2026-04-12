@@ -25,7 +25,7 @@ func run() error {
 	// 2. Configure the loader to use "APP_ENV" instead of the default "SCOPE"
 	loader := goscopeconfig.New(
 		goscopeconfig.WithScopeEnv("APP_ENV"),
-		goscopeconfig.WithConfigDir("config"), // Pointing to the root config directory
+		goscopeconfig.WithConfigDir("../config"), // Pointing to the root config directory
 	)
 
 	// 3. Load the configuration

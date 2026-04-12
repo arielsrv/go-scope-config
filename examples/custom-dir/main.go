@@ -14,7 +14,7 @@ func main() {
 
 	// We force a directory and a specific scope for this example
 	loader := goscopeconfig.New(
-		goscopeconfig.WithConfigDir("examples/custom-dir/configs"),
+		goscopeconfig.WithConfigDir("custom-dir/configs"),
 		goscopeconfig.WithScope("staging"),
 	)
 
