@@ -111,7 +111,12 @@ func main() {
 
 If you want to use the standard `github.com/spf13/viper` package directly,
 you can use the `autoload` sub-package with a blank import. This will load the
-configuration into Viper's global instance.
+configuration into Viper's **global instance** (the singleton returned by
+`viper.GetViper()`).
+
+> [!IMPORTANT]
+> This is distinct from the `DefaultViper` provided by the root package,
+> which uses its own isolated Viper instance.
 
 ```go
 package main
@@ -164,9 +169,45 @@ func main() {
 }
 ```
 
+## Architecture
+
+The `ConfigLoader` is the core component. It uses options for configuration:
+
+- `New(...Option)`: Creates a loader.
+- [NewWithViper(*viper.Viper, ...Option)](config_loader.go): Creates a loader
+  using an existing Viper instance.
+- [WithConfigDir(string)](config_loader.go): Custom configuration directory.
+- [WithScope(string)](config_loader.go): Force a specific scope.
+- [WithScopeEnv(string)](config_loader.go): Custom environment variable for scope.
+- [WithLogger(Logger)](config_loader.go): Provide a logger for loading information.
+
+### Loader API
+
+- `loader.Load()`: Executes the loading and merging.
+- `loader.Viper()`: Returns the internal `*viper.Viper` instance.
+- `loader.GetScope()`: Returns the current detected scope.
+- `loader.GetConfigPath()`: Returns the absolute path of the loaded
+  configuration file.
+
 ## Examples
 
-You can find complete examples in the `examples/` folder.
+You can find complete examples in the `examples/` folder:
+
+- [blank-import](examples/blank-import/main.go): Usage with blank import
+  (global Viper).
+- [autoloader](examples/autoloader/main.go): Quick start using `LoadDefault()`.
+- [automatic](examples/automatic/main.go): Accessing the pre-initialized
+  `DefaultViper`.
+- [with-logger](examples/with-logger/main.go): Integrating with `slog`
+  (JSON format).
+- [custom-scope-env](examples/custom-scope-env/main.go): Using a custom
+  environment variable for scope.
+- [custom-dir](examples/custom-dir/main.go): Loading configurations from a
+  non-standard directory.
+- [merge-common](examples/merge-common/main.go): Demonstrating configuration
+  inheritance and overrides.
+- [uber-fx](examples/uber-fx/main.go): Integration with the Uber-FX
+  dependency injection framework.
 
 ### Run examples
 
@@ -212,6 +253,18 @@ loader := goscopeconfig.New(
 )
 loader.Load()
 ```
+
+## Commands
+
+The project uses [Taskfile](https://taskfile.dev/) to manage common tasks:
+
+- `task test`: Run unit tests.
+- `task lint`: Run linters (`golangci-lint`, `gofumpt`, `betteralign`).
+- `task audit`: Verify modules, run `go vet` and `govulncheck`.
+- `task markdown`: Lint markdown files.
+- `task coverage`: Generate and show coverage report.
+- `task clean`: Remove coverage and temporary files.
+- `task build`: Build the project.
 
 ## Environment Variables
 

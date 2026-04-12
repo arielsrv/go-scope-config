@@ -10,22 +10,26 @@ env:
 tasks:
 
   markdown:
+    desc: Run markdown linting using markdownlint-cli2
     cmds:
       - markdownlint-cli2 "**/*.md" "#vendor"
 
   audit:
+    desc: Verify modules, run go vet and govulncheck
     cmds:
       - go mod verify
       - go vet ./...
       - go tool govulncheck ./...
 
   lint-tools:
+    desc: Run linting tools (golangci-lint, gofumpt, betteralign)
     cmds:
       - go tool golangci-lint run --fix
       - go tool gofumpt -w -l .
       - go tool betteralign -test_files -generated_files -apply ./...
 
   lint:
+    desc: Run linters on the main project and examples
     cmds:
       - cd examples
       - task: lint-tools
@@ -33,36 +37,44 @@ tasks:
       - task: lint-tools
 
   race:
+    desc: Run unit tests with race detection
     cmds:
       - go test -race -count 5 ./...
 
   test:
+    desc: Run unit tests
     cmds:
       - go test -v ./...
 
   test:report:
+    desc: Run unit tests and generate a JUnit report
     cmds:
       - go tool gotestsum --junitfile report.xml --format testname
 
   mock:
+    desc: Generate mocks using mockery
     cmds:
       - go tool mockery --config .mockery.yaml
 
   coverage:
+    desc: Generate and show coverage report
     cmds:
       - go test $SOURCE_FOLDER -covermode=count -coverprofile=$COVERAGE_OUT_FILE
       - go tool cover -html $COVERAGE_OUT_FILE -o $COVERAGE_HTML_FILE
       - go tool cover -func=$COVERAGE_OUT_FILE -o=$COVERAGE_OUT_FILE
 
   coverage:report:
+    desc: Generate coverage profile without showing it
     cmds:
       - go test $SOURCE_FOLDER -coverprofile=coverage-report.out
 
   clean:
+    desc: Remove coverage and temporary files
     cmds:
       - rm -rf $COVERAGE_OUT_FILE $COVERAGE_HTML_FILE
 
   download:
+    desc: Sync workspace, tidy modules and build examples
     cmds:
       - go work sync
       - (cd examples && go mod tidy)
@@ -70,14 +82,17 @@ tasks:
       - go mod tidy
 
   upgrade:
+    desc: Interactive upgrade of go modules dependencies
     cmds:
       - go tool go-mod-upgrade
 
   build:
+    desc: Build the project
     cmds:
       - go build ./...
 
   release:
+    desc: Prepare a release (lint, build, test, race)
     cmds:
       - task: download
       - task: mock
@@ -87,5 +102,6 @@ tasks:
       - task: race
 
   default:
+    desc: Default task (runs release)
     cmds:
       - task: release
