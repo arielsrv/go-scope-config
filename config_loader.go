@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -42,30 +43,30 @@ type Option func(*ConfigLoader)
 
 // WithConfigDir allows specifying a custom folder for the configurations.
 func WithConfigDir(dir string) Option {
-	return func(l *ConfigLoader) {
-		l.configDir = dir
+	return func(loader *ConfigLoader) {
+		loader.configDir = dir
 	}
 }
 
 // WithScope allows forcing a specific scope, ignoring the environment variable.
 func WithScope(scope string) Option {
-	return func(l *ConfigLoader) {
-		l.scope = scope
+	return func(loader *ConfigLoader) {
+		loader.scope = scope
 	}
 }
 
 // WithScopeEnv allows specifying a custom environment variable to load the scope from.
 // Default is SCOPE.
 func WithScopeEnv(envName string) Option {
-	return func(l *ConfigLoader) {
-		l.scopeEnv = envName
+	return func(loader *ConfigLoader) {
+		loader.scopeEnv = envName
 	}
 }
 
 // WithLogger allows providing a logger to show loaded files.
 func WithLogger(logger Logger) Option {
-	return func(l *ConfigLoader) {
-		l.logger = logger
+	return func(loader *ConfigLoader) {
+		loader.logger = logger
 	}
 }
 
@@ -76,27 +77,27 @@ func New(opts ...Option) *ConfigLoader {
 
 // NewWithViper creates a new ConfigLoader instance using a specific Viper instance.
 func NewWithViper(viper *viper.Viper, opts ...Option) *ConfigLoader {
-	l := &ConfigLoader{
+	loader := &ConfigLoader{
 		viper:     viper,
 		configDir: defaultConfig.ConfigDir,
 		scopeEnv:  defaultConfig.ScopeEnv,
 	}
 
-	for _, opt := range opts {
-		opt(l)
+	for opt := range slices.Values(opts) {
+		opt(loader)
 	}
 
 	// If the scope was not forced via Option, we look for it in the environment.
-	if l.scope == "" {
-		envValue := os.Getenv(l.scopeEnv)
+	if loader.scope == "" {
+		envValue := os.Getenv(loader.scopeEnv)
 		if envValue != "" {
-			l.scope = strings.ToLower(envValue)
+			loader.scope = strings.ToLower(envValue)
 		} else {
-			l.scope = defaultConfig.Scope
+			loader.scope = defaultConfig.Scope
 		}
 	}
 
-	return l
+	return loader
 }
 
 // Load loads the configuration according to the current scope.
@@ -162,12 +163,12 @@ func init() {
 // loads the configuration, and returns the internal Viper instance.
 // This is useful for quick starts where default behavior is enough.
 func LoadDefault() (*viper.Viper, error) {
-	l := New()
-	err := l.Load()
+	loader := New()
+	err := loader.Load()
 	if err != nil {
 		return nil, err
 	}
-	return l.Viper(), nil
+	return loader.Viper(), nil
 }
 
 // Viper returns the internal viper instance to access values.
