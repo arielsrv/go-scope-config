@@ -279,6 +279,15 @@ by `_`).
 
 Example: `APP_NAME=my-app` will override the value of `app.name` in the YAML.
 
+## GitHub Pages Documentation
+
+The project documentation is also available as a [GitHub Pages site](https://arielsrv.github.io/go-scope-config/).
+
+> [!NOTE]
+> To enable GitHub Pages for your fork:
+> 1. Go to **Settings > Pages**.
+> 2. Under **Build and deployment > Source**, select **GitHub Actions**.
+
 ## Tests
 
 ```bash
