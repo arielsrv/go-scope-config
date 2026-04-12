@@ -1,5 +1,9 @@
 # go-scope-config
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/arielsrv/go-scope-config.svg)](https://pkg.go.dev/github.com/arielsrv/go-scope-config)
+[![Go Report Card](https://goreportcard.com/badge/github.com/arielsrv/go-scope-config)](https://goreportcard.com/report/github.com/arielsrv/go-scope-config)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://arielsrv.github.io/go-scope-config/)
+
 Go package for loading environment-based configurations (`SCOPE`) using [Viper](https://github.com/spf13/viper).
 
 This package is particularly well-suited for **Kubernetes** environments, where
