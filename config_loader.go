@@ -27,6 +27,7 @@ type ConfigLoader struct {
 	viper      *viper.Viper
 	configDir  string
 	scope      string
+	scopeEnv   string
 	configPath string
 }
 
@@ -53,6 +54,14 @@ func WithScope(scope string) Option {
 	}
 }
 
+// WithScopeEnv allows specifying a custom environment variable to load the scope from.
+// Default is SCOPE.
+func WithScopeEnv(envName string) Option {
+	return func(l *ConfigLoader) {
+		l.scopeEnv = envName
+	}
+}
+
 // WithLogger allows providing a logger to show loaded files.
 func WithLogger(logger Logger) Option {
 	return func(l *ConfigLoader) {
@@ -70,6 +79,7 @@ func NewWithViper(viper *viper.Viper, opts ...Option) *ConfigLoader {
 	l := &ConfigLoader{
 		viper:     viper,
 		configDir: defaultConfig.ConfigDir,
+		scopeEnv:  defaultConfig.ScopeEnv,
 	}
 
 	for _, opt := range opts {
@@ -78,7 +88,7 @@ func NewWithViper(viper *viper.Viper, opts ...Option) *ConfigLoader {
 
 	// If the scope was not forced via Option, we look for it in the environment.
 	if l.scope == "" {
-		l.scope = strings.ToLower(os.Getenv(defaultConfig.ScopeEnv))
+		l.scope = strings.ToLower(os.Getenv(l.scopeEnv))
 		if l.scope == "" {
 			l.scope = defaultConfig.Scope
 		}

@@ -55,6 +55,15 @@ func TestNew(t *testing.T) {
 			t.Errorf("Expected scope custom, got %s", l.GetScope())
 		}
 	})
+
+	t.Run("With Custom ScopeEnv", func(t *testing.T) {
+		customEnv := "MY_SCOPE"
+		t.Setenv(customEnv, "staging")
+		l := New(WithScopeEnv(customEnv))
+		if l.GetScope() != "staging" {
+			t.Errorf("Expected scope staging, got %s", l.GetScope())
+		}
+	})
 }
 
 func TestLoad(t *testing.T) {
