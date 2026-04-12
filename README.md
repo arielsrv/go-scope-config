@@ -168,61 +168,29 @@ func main() {
 
 You can find complete examples in the `examples/` folder.
 
-### Run simple example
+### Run examples
+
+The examples are in a separate module. To run them, go to the `examples` directory:
 
 ```bash
-go run examples/simple/main.go
+cd examples
 ```
 
-### Run example with custom directory
+Then run the desired example:
 
 ```bash
-go run examples/custom-dir/main.go
+go run simple/main.go
+go run custom-dir/main.go
+go run merge-common/main.go
+go run autoloader/main.go
+go run automatic/main.go
+go run blank-import/main.go
+go run with-logger/main.go
+go run custom-scope-env/main.go
+go run uber-fx/main.go
 ```
 
-### Run example with common config merging
-
-```bash
-go run examples/merge-common/main.go
-```
-
-### Run autoloader example
-
-```bash
-go run examples/autoloader/main.go
-```
-
-### Run automatic autoloader example (named import)
-
-```bash
-go run examples/automatic/main.go
-```
-
-### Run automatic autoloader example (blank import)
-
-```bash
-go run examples/blank-import/main.go
-```
-
-### Run example with logger (slog JSON)
-
-```bash
-go run examples/with-logger/main.go
-```
-
-### Run example with custom scope environment variable
- 
- ```bash
- go run examples/custom-scope-env/main.go
- ```
- 
-+### Run example with Uber-go/fx
-+
-+```bash
-+go run examples/uber-fx/main.go
-+```
-+
- ## Logger Support
+## Logger Support
  
  You can provide a logger that satisfies the `Logger` interface (which has a
 `Printf(format string, v ...any)` method). This allows easy integration with
