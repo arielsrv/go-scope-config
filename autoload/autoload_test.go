@@ -1,12 +1,14 @@
-package autoload
+package autoload_test
 
 import (
 	"testing"
 
 	"github.com/spf13/viper"
+
+	_ "github.com/arielsrv/go-scope-config/autoload"
 )
 
-func TestAutoload(t *testing.T) {
+func TestAutoload(_ *testing.T) {
 	// The init() function in autoload.go runs automatically when this package is imported.
 	// It should have loaded the configuration into the global viper instance.
 

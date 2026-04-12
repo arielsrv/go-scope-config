@@ -1,4 +1,4 @@
-package goscopeconfig
+package goscopeconfig_test
 
 import (
 	"fmt"
@@ -8,7 +8,22 @@ import (
 	"testing"
 
 	"github.com/spf13/viper"
+
+	goscopeconfig "github.com/arielsrv/go-scope-config"
 )
+
+// Default config values mirrored from the original package for testing purposes.
+var defaultConfig = struct {
+	ConfigDir  string
+	Scope      string
+	ScopeEnv   string
+	CommonName string
+}{
+	ConfigDir:  "config",
+	Scope:      "dev",
+	ScopeEnv:   "SCOPE",
+	CommonName: "config.common",
+}
 
 func TestNew(t *testing.T) {
 	// Clear environment variables for a clean test
@@ -18,7 +33,7 @@ func TestNew(t *testing.T) {
 	}
 
 	t.Run("Default ConfigLoader", func(t *testing.T) {
-		l := New()
+		l := goscopeconfig.New()
 		if l.GetScope() != defaultConfig.Scope {
 			t.Errorf("Expected scope %s, got %s", defaultConfig.Scope, l.GetScope())
 		}
@@ -32,14 +47,14 @@ func TestNew(t *testing.T) {
 				return
 			}
 		}()
-		l := New()
+		l := goscopeconfig.New()
 		if l.GetScope() != "prod" {
 			t.Errorf("Expected scope prod, got %s", l.GetScope())
 		}
 	})
 
 	t.Run("With Custom Option WithScope", func(t *testing.T) {
-		l := New(WithScope("staging"))
+		l := goscopeconfig.New(goscopeconfig.WithScope("staging"))
 		if l.GetScope() != "staging" {
 			t.Errorf("Expected scope staging, got %s", l.GetScope())
 		}
@@ -47,7 +62,7 @@ func TestNew(t *testing.T) {
 
 	t.Run("NewWithViper", func(t *testing.T) {
 		v := viper.New()
-		l := NewWithViper(v, WithScope("custom"))
+		l := goscopeconfig.NewWithViper(v, goscopeconfig.WithScope("custom"))
 		if l.Viper() != v {
 			t.Error("Viper instance mismatch")
 		}
@@ -59,7 +74,7 @@ func TestNew(t *testing.T) {
 	t.Run("With Custom ScopeEnv", func(t *testing.T) {
 		customEnv := "MY_SCOPE"
 		t.Setenv(customEnv, "staging")
-		l := New(WithScopeEnv(customEnv))
+		l := goscopeconfig.New(goscopeconfig.WithScopeEnv(customEnv))
 		if l.GetScope() != "staging" {
 			t.Errorf("Expected scope staging, got %s", l.GetScope())
 		}
@@ -84,7 +99,7 @@ func TestLoad(t *testing.T) {
 	}
 
 	t.Run("Load dev config", func(t *testing.T) {
-		l := New(WithConfigDir(tmpDir), WithScope("dev"))
+		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("dev"))
 		err = l.Load()
 		if err != nil {
 			t.Fatalf("Could not load configuration: %v", err)
@@ -95,7 +110,7 @@ func TestLoad(t *testing.T) {
 	})
 
 	t.Run("Load prod config (yml extension)", func(t *testing.T) {
-		l := New(WithConfigDir(tmpDir), WithScope("prod"))
+		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("prod"))
 		err = l.Load()
 		if err != nil {
 			t.Fatalf("Could not load configuration: %v", err)
@@ -106,7 +121,7 @@ func TestLoad(t *testing.T) {
 	})
 
 	t.Run("Config not found error", func(t *testing.T) {
-		l := New(WithConfigDir(tmpDir), WithScope("missing"))
+		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("missing"))
 		err = l.Load()
 		if err == nil {
 			t.Error("An error was expected when the configuration file does not exist")
@@ -119,7 +134,7 @@ func TestLoad(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		l := New(WithConfigDir(tmpDir), WithScope("invalid"))
+		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("invalid"))
 		err = l.Load()
 		if err == nil {
 			t.Error("Expected error for invalid yaml content, got nil")
@@ -135,7 +150,7 @@ func TestLoad(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		l := New(WithConfigDir(subTmpDir), WithScope("dev"))
+		l := goscopeconfig.New(goscopeconfig.WithConfigDir(subTmpDir), goscopeconfig.WithScope("dev"))
 		err = l.Load()
 		if err == nil {
 			t.Error("Expected error for invalid common yaml content, got nil")
@@ -168,7 +183,7 @@ app:
 			t.Fatal(err)
 		}
 
-		l := New(WithConfigDir(tmpDir), WithScope("dev"))
+		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("dev"))
 		err = l.Load()
 		if err != nil {
 			t.Fatalf("Could not load configuration: %v", err)
@@ -201,7 +216,11 @@ app:
 			t.Fatal(err)
 		}
 
-		l := New(WithConfigDir(tmpDir), WithScope("dev"), WithLogger(mockLogger))
+		l := goscopeconfig.New(
+			goscopeconfig.WithConfigDir(tmpDir),
+			goscopeconfig.WithScope("dev"),
+			goscopeconfig.WithLogger(mockLogger),
+		)
 		err = l.Load()
 		if err != nil {
 			t.Fatalf("Could not load configuration: %v", err)
@@ -250,21 +269,21 @@ func (m *mockLogger) Printf(format string, v ...any) {
 }
 
 func TestDefaultViper(t *testing.T) {
-	// For this test, DefaultViper was already initialized by init() when the test started.
+	// For this test, goscopeconfig.DefaultViper was already initialized by init() when the test started.
 	// Since we are running tests from the package root, and "config/config.dev.yaml" exists,
-	// DefaultViper should be loaded if the tests were started with the right environment.
+	// goscopeconfig.DefaultViper should be loaded if the tests were started with the right environment.
 	// Note: init() runs only once.
 
 	// Since we cannot easily re-run init(), we check if it loaded correctly
 	// given the existing "config" directory in the project root.
-	if DefaultViper == nil {
-		t.Error("DefaultViper should not be nil")
+	if goscopeconfig.DefaultViper == nil {
+		t.Error("goscopeconfig.DefaultViper should not be nil")
 	}
 
 	// We can't guarantee what's in the root config/ during all test environments,
 	// but in this project it should have "My App Dev" if it's the one we created earlier.
 	// Let's just check if we can access it without crashing.
-	_ = DefaultViper.GetString("app.name")
+	_ = goscopeconfig.DefaultViper.GetString("app.name")
 }
 
 func TestLoadDefault(t *testing.T) {
@@ -293,7 +312,7 @@ func TestLoadDefault(t *testing.T) {
 		if err != nil {
 			return
 		}
-		v, dfltErr := LoadDefault()
+		v, dfltErr := goscopeconfig.LoadDefault()
 		if dfltErr != nil {
 			t.Fatalf("LoadDefault failed: %v", dfltErr)
 		}
@@ -307,7 +326,7 @@ func TestLoadDefault(t *testing.T) {
 		otherTmp := t.TempDir()
 		t.Chdir(otherTmp)
 
-		v, dfltErr := LoadDefault()
+		v, dfltErr := goscopeconfig.LoadDefault()
 		if dfltErr == nil {
 			t.Error("Expected error when loading default config from empty directory, got nil")
 		}
