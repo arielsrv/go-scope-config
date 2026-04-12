@@ -211,14 +211,20 @@ go run examples/with-logger/main.go
 ```
 
 ### Run example with custom scope environment variable
-
-```bash
-go run examples/custom-scope-env/main.go
-```
-
-## Logger Support
-
-You can provide a logger that satisfies the `Logger` interface (which has a
+ 
+ ```bash
+ go run examples/custom-scope-env/main.go
+ ```
+ 
++### Run example with Uber-go/fx
++
++```bash
++go run examples/uber-fx/main.go
++```
++
+ ## Logger Support
+ 
+ You can provide a logger that satisfies the `Logger` interface (which has a
 `Printf(format string, v ...any)` method). This allows easy integration with
 both the standard `log` package and modern loggers like `slog`.
 
