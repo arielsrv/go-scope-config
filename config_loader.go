@@ -1,6 +1,7 @@
 package goscopeconfig
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"os"
@@ -89,12 +90,7 @@ func NewWithViper(viper *viper.Viper, opts ...Option) *ConfigLoader {
 
 	// If the scope was not forced via Option, we look for it in the environment.
 	if loader.scope == "" {
-		envValue := os.Getenv(loader.scopeEnv)
-		if envValue != "" {
-			loader.scope = strings.ToLower(envValue)
-		} else {
-			loader.scope = defaultConfig.Scope
-		}
+		loader.scope = strings.ToLower(cmp.Or(os.Getenv(loader.scopeEnv), defaultConfig.Scope))
 	}
 
 	return loader
