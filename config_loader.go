@@ -88,8 +88,10 @@ func NewWithViper(viper *viper.Viper, opts ...Option) *ConfigLoader {
 
 	// If the scope was not forced via Option, we look for it in the environment.
 	if l.scope == "" {
-		l.scope = strings.ToLower(os.Getenv(l.scopeEnv))
-		if l.scope == "" {
+		envValue := os.Getenv(l.scopeEnv)
+		if envValue != "" {
+			l.scope = strings.ToLower(envValue)
+		} else {
 			l.scope = defaultConfig.Scope
 		}
 	}
@@ -107,6 +109,12 @@ func (r *ConfigLoader) Load() error {
 	// We also allow reading from general environment variables
 	r.viper.AutomaticEnv()
 	r.viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	if r.logger != nil {
+		r.logger.Printf("Loading configuration for scope: %s (from environment variable: %s)", r.scope, r.scopeEnv)
+		r.logger.Printf("Automatic environment variables enabled (replacing '.' with '_')")
+		r.logger.Printf("Configuration directory: %s", r.configDir)
+	}
 
 	// 1. Try to load config.common.yaml
 	r.viper.SetConfigName(defaultConfig.CommonName)
