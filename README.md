@@ -34,6 +34,28 @@ If a `config.common.yaml` (or `.yml`) exists in the configuration directory,
 it will be loaded first as a base configuration. Then, the scope-specific file
 (`config.[SCOPE].yaml`) will be merged into it, overriding any shared keys.
 
+```mermaid
+graph TD
+    Start([Start Load]) --> InitViper[Initialize Viper]
+    InitViper --> LoadEnv[AutomaticEnv enabled]
+    LoadEnv --> CheckCommon{config.common.yaml?}
+    CheckCommon -- Exists --> ReadCommon[Read common config]
+    CheckCommon -- Not Found --> CheckScope
+    ReadCommon --> CheckScope{config.[SCOPE].yaml?}
+    CheckScope -- Exists --> MergeScope[Merge scope config]
+    CheckScope -- Not Found --> Error([Error: Scope config not found])
+    MergeScope --> FinalConfig([Final Configuration])
+    
+    subgraph Merging Logic
+        ReadCommon
+        MergeScope
+    end
+    
+    style ReadCommon fill:#f9f,stroke:#333,stroke-width:2px
+    style MergeScope fill:#bbf,stroke:#333,stroke-width:2px
+    style Error fill:#fbb,stroke:#333,stroke-width:2px
+```
+
 ### Example File Structure
 
 ```text
