@@ -108,7 +108,7 @@ func NewWithViper(viper *viper.Viper, opts ...Option) *ConfigLoader {
 // It looks for config.common.yaml/yml first and then merges with config.[scope].yaml/yml.
 // The scope-specific configuration overrides values in the common one.
 func (r *ConfigLoader) Load() error {
-	r.viper.SetConfigType("yaml") // Viper automatically supports yaml and yml if yaml is specified as the type
+	r.viper.SetConfigType("yaml") // Viper automatically supports YAML and yml if YAML is specified as the type
 	r.viper.AddConfigPath(r.configDir)
 
 	// We also allow reading from general environment variables
