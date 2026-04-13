@@ -4,6 +4,26 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/arielsrv/go-scope-config)](https://goreportcard.com/report/github.com/arielsrv/go-scope-config)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://arielsrv.github.io/go-scope-config/)
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration Merging (Inheritance)](#configuration-merging-inheritance)
+- [Example File Structure](#example-file-structure)
+- [Code](#code)
+  - [Using LoadDefault (Autoloader)](#using-loaddefault-autoloader)
+- [Automatic Autoloader (init function)](#automatic-autoloader-init-function)
+  - [1. Using DefaultViper (named import)](#1-using-defaultviper-named-import)
+  - [2. Using Blank Import (global Viper)](#2-using-blank-import-global-viper)
+  - [Manual Initialization (With Options)](#manual-initialization-with-options)
+- [Architecture](#architecture)
+  - [Loader API](#loader-api)
+- [Examples](#examples)
+  - [Run examples](#run-examples)
+- [Logger Support](#logger-support)
+- [Commands](#commands)
+- [Environment Variables](#environment-variables)
+
 Go package for loading environment-based configurations (`SCOPE`) using [Viper](https://github.com/spf13/viper).
 
 This package is particularly well-suited for **Kubernetes** environments, where
@@ -300,19 +320,3 @@ corresponding prefix (by default no prefix, with the `.` separator replaced
 by `_`).
 
 Example: `APP_NAME=my-app` will override the value of `app.name` in the YAML.
-
-## GitHub Pages Documentation
-
-The project documentation is also available as a [GitHub Pages site](https://arielsrv.github.io/go-scope-config/).
-
-> [!NOTE]
-> To enable GitHub Pages for your fork:
->
-> 1. Go to **Settings > Pages**.
-> 2. Under **Build and deployment > Source**, select **GitHub Actions**.
-
-## Tests
-
-```bash
-go test ./...
-```
