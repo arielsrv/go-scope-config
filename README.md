@@ -41,7 +41,7 @@ graph TD
     LoadEnv --> CheckCommon{config.common.yaml?}
     CheckCommon -- Exists --> ReadCommon[Read common config]
     CheckCommon -- Not Found --> CheckScope
-    ReadCommon --> CheckScope{config.[SCOPE].yaml?}
+    ReadCommon --> CheckScope{config.SCOPE.yaml?}
     CheckScope -- Exists --> MergeScope[Merge scope config]
     CheckScope -- Not Found --> Error([Error: Scope config not found])
     MergeScope --> FinalConfig([Final Configuration])
