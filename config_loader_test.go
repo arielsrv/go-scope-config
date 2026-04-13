@@ -1,15 +1,16 @@
 package goscopeconfig_test
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/spf13/viper"
+	"github.com/stretchr/testify/mock"
 
 	goscopeconfig "github.com/arielsrv/go-scope-config"
+	goscopeconfigmocks "github.com/arielsrv/go-scope-config/mocks"
 )
 
 // Default config values mirrored from the original package for testing purposes.
@@ -209,12 +210,26 @@ app:
 	})
 
 	t.Run("With logger", func(t *testing.T) {
-		mockLogger := &mockLogger{}
+		mockLogger := goscopeconfigmocks.NewMockLogger(t)
 		commonConfig := filepath.Join(tmpDir, "config.common.yaml")
 		err = os.WriteFile(commonConfig, []byte("app:\n  base: true\n"), 0o644)
 		if err != nil {
 			t.Fatal(err)
 		}
+
+		// Expectations for loaded files using typed EXPECT()
+		mockLogger.EXPECT().Printf(mock.Anything, mock.MatchedBy(func(s string) bool {
+			return strings.Contains(s, "config.common.yaml")
+		})).Once()
+
+		mockLogger.EXPECT().Printf(mock.Anything, "dev", mock.MatchedBy(func(s string) bool {
+			return strings.Contains(s, "config.dev.yaml")
+		})).Once()
+
+		// Optional logs (loading messages, automatic env, etc.)
+		mockLogger.EXPECT().Printf(mock.Anything, mock.Anything).Maybe()
+		mockLogger.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything).Maybe()
+		mockLogger.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Maybe()
 
 		l := goscopeconfig.New(
 			goscopeconfig.WithConfigDir(tmpDir),
@@ -225,47 +240,7 @@ app:
 		if err != nil {
 			t.Fatalf("Could not load configuration: %v", err)
 		}
-
-		if len(mockLogger.messages) < 2 {
-			t.Errorf("Expected at least 2 log messages, got %d", len(mockLogger.messages))
-		}
-
-		foundCommon := false
-		foundScope := false
-		for _, msg := range mockLogger.messages {
-			if filepath.Base(msg) == "config.common.yaml" || filepath.Base(msg) == "config.common" {
-				// The message contains the full path, so we check if it contains common
-				foundCommon = true
-			}
-			// Printf format: "Loaded common configuration from: %s"
-			// and "Loaded scope-specific configuration (%s) from: %s"
-		}
-
-		// Re-checking more specifically
-		for _, msg := range mockLogger.messages {
-			if strings.Contains(msg, "Loaded common configuration") {
-				foundCommon = true
-			}
-			if strings.Contains(msg, "Loaded scope-specific configuration (dev)") {
-				foundScope = true
-			}
-		}
-
-		if !foundCommon {
-			t.Error("Expected log message for common configuration")
-		}
-		if !foundScope {
-			t.Error("Expected log message for scope-specific configuration")
-		}
 	})
-}
-
-type mockLogger struct {
-	messages []string
-}
-
-func (m *mockLogger) Printf(format string, v ...any) {
-	m.messages = append(m.messages, fmt.Sprintf(format, v...))
 }
 
 func TestDefaultViper(t *testing.T) {
