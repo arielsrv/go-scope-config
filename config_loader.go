@@ -11,17 +11,25 @@ import (
 	"github.com/spf13/viper"
 )
 
-var defaultConfig = struct {
+// Defaults contain the default configuration values.
+type Defaults struct {
 	ConfigDir  string
 	Scope      string
 	ScopeEnv   string
 	CommonName string
-}{
-	ConfigDir:  "config",
-	Scope:      "dev",
-	ScopeEnv:   "SCOPE",
-	CommonName: "config.common",
 }
+
+// DefaultConfig returns the default configuration values.
+func DefaultConfig() Defaults {
+	return Defaults{
+		ConfigDir:  "config",
+		Scope:      "dev",
+		ScopeEnv:   "SCOPE",
+		CommonName: "config.common",
+	}
+}
+
+var defaultConfig = DefaultConfig()
 
 // ConfigLoader handles loading configurations based on the scope.
 type ConfigLoader struct {

@@ -13,18 +13,7 @@ import (
 	goscopeconfigmocks "github.com/arielsrv/go-scope-config/mocks"
 )
 
-// Default config values mirrored from the original package for testing purposes.
-var defaultConfig = struct {
-	ConfigDir  string
-	Scope      string
-	ScopeEnv   string
-	CommonName string
-}{
-	ConfigDir:  "config",
-	Scope:      "dev",
-	ScopeEnv:   "SCOPE",
-	CommonName: "config.common",
-}
+var defaultConfig = goscopeconfig.DefaultConfig()
 
 func TestNew(t *testing.T) {
 	// Clear environment variables for a clean test
