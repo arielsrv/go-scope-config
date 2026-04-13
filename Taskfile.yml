@@ -39,7 +39,7 @@ tasks:
   race:
     desc: Run unit tests with race detection
     cmds:
-      - go test -race -count 5 ./...
+      - go test -race -count 100 ./...
 
   test:
     desc: Run unit tests
