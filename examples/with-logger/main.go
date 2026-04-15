@@ -13,16 +13,15 @@ type slogWrapper struct {
 	logger *slog.Logger
 }
 
-func (s *slogWrapper) Printf(format string, v ...any) {
-	s.logger.Info(fmt.Sprintf(format, v...))
+func (r *slogWrapper) Printf(format string, v ...any) {
+	r.logger.Info(fmt.Sprintf(format, v...))
 }
 
 func main() {
 	fmt.Println("--- Example with slog (JSON format) ---")
 
 	// Create a new slog logger with JSON handler
-	handler := slog.NewJSONHandler(os.Stdout, nil)
-	logger := slog.New(handler)
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	// Wrap it to satisfy the Logger interface
 	loader := goscopeconfig.New(
