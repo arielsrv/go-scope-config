@@ -254,6 +254,8 @@ You can find complete examples in the `examples/` folder:
   inheritance and overrides.
 - [uber-fx](examples/uber-fx/main.go): Integration with the Uber-FX
   dependency injection framework.
+- [docker-compose](examples/docker-compose/main.go): Running inside a container
+  with Docker Compose, demonstrating environment variable inheritance.
 
 ### Run examples
 
@@ -275,6 +277,15 @@ go run blank-import/main.go
 go run with-logger/main.go
 go run custom-scope-env/main.go
 go run uber-fx/main.go
+
+#### Docker Compose Example
+
+To run the Docker Compose example:
+
+```bash
+cd examples/docker-compose
+docker compose up
+```
 ```
 
 ## Logger Support

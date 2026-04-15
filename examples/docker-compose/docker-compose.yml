@@ -1,0 +1,17 @@
+services:
+  app-dev:
+    build:
+      context: ../../
+      dockerfile: examples/docker-compose/Dockerfile
+    environment:
+      - SCOPE=dev
+    container_name: goscope-app-dev
+
+  app-prod:
+    build:
+      context: ../../
+      dockerfile: examples/docker-compose/Dockerfile
+    environment:
+      - SCOPE=prod
+      - DB_HOST=env-overridden-host
+    container_name: goscope-app-prod

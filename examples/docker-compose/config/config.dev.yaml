@@ -1,0 +1,4 @@
+db:
+  host: "dev-db-host"
+api:
+  key: "dev-key"

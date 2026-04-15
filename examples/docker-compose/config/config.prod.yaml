@@ -1,0 +1,4 @@
+db:
+  host: "prod-db-server"
+api:
+  key: "prod-very-secret-key"

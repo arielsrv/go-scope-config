@@ -1,0 +1,6 @@
+app:
+  name: "My Dockerized App"
+db:
+  host: "localhost"
+api:
+  key: "common-secret"
