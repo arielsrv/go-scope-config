@@ -23,7 +23,7 @@ jobs:
 
       - name: Run coverage
         run: |
-          go test ./rest/... -covermode=count -coverprofile=coverage.out
+          go test ./... -covermode=count -coverprofile=coverage.out
           COVERAGE=$(go tool cover -func=coverage.out | grep '^total:' | awk '{print $3}' | tr -d '%')
           echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
 
