@@ -1,0 +1,44 @@
+name: Coverage
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.2'
+
+      - name: Run coverage
+        run: |
+          go test ./rest/... -covermode=count -coverprofile=coverage.out
+          COVERAGE=$(go tool cover -func=coverage.out | grep '^total:' | awk '{print $3}' | tr -d '%')
+          echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
+
+      - name: Update badge in README
+        run: |
+          PCTINT=$(echo "$COVERAGE" | cut -d'.' -f1)
+          if [ "$PCTINT" -ge 90 ]; then COLOR="brightgreen"
+          elif [ "$PCTINT" -ge 75 ]; then COLOR="green"
+          elif [ "$PCTINT" -ge 60 ]; then COLOR="yellow"
+          else COLOR="red"
+          fi
+          sed -i "s|!\[Coverage\](https://img\.shields\.io/badge/Coverage-[^)]*)|![Coverage](https://img.shields.io/badge/Coverage-${COVERAGE}%25-${COLOR})|g" README.md
+
+      - name: Commit badge
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "chore: update coverage badge"
+          file_pattern: README.md
