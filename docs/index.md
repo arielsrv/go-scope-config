@@ -20,7 +20,7 @@
     - [Loader API](#loader-api)
 - [Examples](#examples)
     - [Run examples](#run-examples)
-- [Logger Support](#logger-support)
+- [Logger Support](#logger-support-1)
 - [Commands](#commands)
 - [Environment Variables](#environment-variables)
 
@@ -220,12 +220,12 @@ func main() {
 The `ConfigLoader` is the core component. It uses options for configuration:
 
 - `New(...Option)`: Creates a loader.
-- [NewWithViper(*viper.Viper, ...Option)](config_loader.go): Creates a loader
+- [NewWithViper(*viper.Viper, ...Option)](https://github.com/arielsrv/go-scope-config/blob/main/config_loader.go): Creates a loader
   using an existing Viper instance.
-- [WithConfigDir(string)](config_loader.go): Custom configuration directory.
-- [WithScope(string)](config_loader.go): Force a specific scope.
-- [WithScopeEnv(string)](config_loader.go): Custom environment variable for scope.
-- [WithLogger(Logger)](config_loader.go): Provide a logger for loading information.
+- [WithConfigDir(string)](https://github.com/arielsrv/go-scope-config/blob/main/config_loader.go): Custom configuration directory.
+- [WithScope(string)](https://github.com/arielsrv/go-scope-config/blob/main/config_loader.go): Force a specific scope.
+- [WithScopeEnv(string)](https://github.com/arielsrv/go-scope-config/blob/main/config_loader.go): Custom environment variable for scope.
+- [WithLogger(Logger)](https://github.com/arielsrv/go-scope-config/blob/main/config_loader.go): Provide a logger for loading information.
 
 ### Loader API
 
@@ -239,22 +239,22 @@ The `ConfigLoader` is the core component. It uses options for configuration:
 
 You can find complete examples in the `examples/` folder:
 
-- [blank-import](examples/blank-import/main.go): Usage with blank import
+- [blank-import](https://github.com/arielsrv/go-scope-config/blob/main/examples/blank-import/main.go): Usage with blank import
   (global Viper).
-- [autoloader](examples/autoloader/main.go): Quick start using `LoadDefault()`.
-- [automatic](examples/automatic/main.go): Accessing the pre-initialized
+- [autoloader](https://github.com/arielsrv/go-scope-config/blob/main/examples/autoloader/main.go): Quick start using `LoadDefault()`.
+- [automatic](https://github.com/arielsrv/go-scope-config/blob/main/examples/automatic/main.go): Accessing the pre-initialized
   `DefaultViper`.
-- [with-logger](examples/with-logger/main.go): Integrating with `slog`
+- [with-logger](https://github.com/arielsrv/go-scope-config/blob/main/examples/with-logger/main.go): Integrating with `slog`
   (JSON format).
-- [custom-scope-env](examples/custom-scope-env/main.go): Using a custom
+- [custom-scope-env](https://github.com/arielsrv/go-scope-config/blob/main/examples/custom-scope-env/main.go): Using a custom
   environment variable for scope.
-- [custom-dir](examples/custom-dir/main.go): Loading configurations from a
+- [custom-dir](https://github.com/arielsrv/go-scope-config/blob/main/examples/custom-dir/main.go): Loading configurations from a
   non-standard directory.
-- [merge-common](examples/merge-common/main.go): Demonstrating configuration
+- [merge-common](https://github.com/arielsrv/go-scope-config/blob/main/examples/merge-common/main.go): Demonstrating configuration
   inheritance and overrides.
-- [uber-fx](examples/uber-fx/main.go): Integration with the Uber-FX
+- [uber-fx](https://github.com/arielsrv/go-scope-config/blob/main/examples/uber-fx/main.go): Integration with the Uber-FX
   dependency injection framework.
-- [docker-compose](examples/docker-compose/main.go): Running inside a container
+- [docker-compose](https://github.com/arielsrv/go-scope-config/blob/main/examples/docker-compose/main.go): Running inside a container
   with Docker Compose, demonstrating environment variable inheritance.
 
 ### Run examples
@@ -289,6 +289,7 @@ docker compose up
 
 ```
 
+<a id="logger-support"></a>
 ## Logger Support
 
 You can provide a logger that satisfies the `Logger` interface (which has a
