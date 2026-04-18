@@ -1,0 +1,1118 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>go-scope-config</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#go-scope-config" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="go-scope-config" class="md-header__button md-logo" aria-label="go-scope-config" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            go-scope-config
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="go-scope-config" class="md-nav__button md-logo" aria-label="go-scope-config" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    go-scope-config
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-merging-inheritance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Merging (Inheritance)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example File Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-loaddefault-autoloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using LoadDefault (Autoloader)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic-autoloader-init-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Autoloader (init function)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatic Autoloader (init function)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-using-defaultviper-named-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Using DefaultViper (named import)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-using-blank-import-global-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Using Blank Import (global Viper)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-initialization-with-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Initialization (With Options)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#loader-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loader API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-merging-inheritance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Merging (Inheritance)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example File Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-loaddefault-autoloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using LoadDefault (Autoloader)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic-autoloader-init-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Autoloader (init function)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatic Autoloader (init function)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-using-defaultviper-named-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Using DefaultViper (named import)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-using-blank-import-global-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Using Blank Import (global Viper)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-initialization-with-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Initialization (With Options)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#loader-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loader API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="go-scope-config">go-scope-config</h1>
+<p><a href="https://pkg.go.dev/github.com/arielsrv/go-scope-config"><img alt="Go Reference" src="https://pkg.go.dev/badge/github.com/arielsrv/go-scope-config.svg" /></a>
+<a href="https://goreportcard.com/report/github.com/arielsrv/go-scope-config"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/arielsrv/go-scope-config" /></a>
+<a href="https://arielsrv.github.io/go-scope-config/"><img alt="Documentation" src="https://img.shields.io/badge/docs-GitHub%20Pages-blue" /></a></p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#configuration-merging-inheritance">Configuration Merging (Inheritance)</a></li>
+<li><a href="#example-file-structure">Example File Structure</a></li>
+<li><a href="#code">Code</a><ul>
+<li><a href="#using-loaddefault-autoloader">Using LoadDefault (Autoloader)</a></li>
+</ul>
+</li>
+<li><a href="#automatic-autoloader-init-function">Automatic Autoloader (init function)</a><ul>
+<li><a href="#1-using-defaultviper-named-import">1. Using DefaultViper (named import)</a></li>
+<li><a href="#2-using-blank-import-global-viper">2. Using Blank Import (global Viper)</a></li>
+<li><a href="#manual-initialization-with-options">Manual Initialization (With Options)</a></li>
+</ul>
+</li>
+<li><a href="#architecture">Architecture</a><ul>
+<li><a href="#loader-api">Loader API</a></li>
+</ul>
+</li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#run-examples">Run examples</a></li>
+</ul>
+</li>
+<li><a href="#logger-support">Logger Support</a></li>
+<li><a href="#commands">Commands</a></li>
+<li><a href="#environment-variables">Environment Variables</a></li>
+</ul>
+<p>Go package for loading environment-based configurations (<code>SCOPE</code>) using <a href="https://github.com/spf13/viper">Viper</a>.</p>
+<p>This package is particularly well-suited for <strong>Kubernetes</strong> environments, where
+the <code>SCOPE</code> variable (e.g., <code>dev</code>, <code>staging</code>, <code>prod</code>) can be easily injected
+into Pods as an environment variable, allowing the application to automatically
+pick the correct configuration file based on the cluster environment.</p>
+<p>The environment variable name (<code>SCOPE</code>) is configurable to support different
+organizational standards.</p>
+<h2 id="installation">Installation</h2>
+<pre><code class="language-bash">go get github.com/arielsrv/go-scope-config
+</code></pre>
+<h2 id="usage">Usage</h2>
+<p>The package automatically looks for the <code>SCOPE</code> environment variable.
+If it's not defined, it uses <code>dev</code> by default.</p>
+<p>It searches for files with the pattern <code>config.[SCOPE].yaml</code> or
+<code>config.[SCOPE].yml</code> in a folder (default is <code>config/</code>).</p>
+<h3 id="configuration-merging-inheritance">Configuration Merging (Inheritance)</h3>
+<p>If a <code>config.common.yaml</code> (or <code>.yml</code>) exists in the configuration directory,
+it will be loaded first as a base configuration. Then, the scope-specific file
+(<code>config.[SCOPE].yaml</code>) will be merged into it, overriding any shared keys.</p>
+<pre><code class="language-mermaid">graph TD
+    Start([Start Load]) --&gt; InitViper[Initialize Viper]
+    InitViper --&gt; LoadEnv[AutomaticEnv enabled]
+    LoadEnv --&gt; CheckCommon{config.common.yaml?}
+    CheckCommon -- Exists --&gt; ReadCommon[Read common config]
+    CheckCommon -- Not Found --&gt; CheckScope
+    ReadCommon --&gt; CheckScope{config.SCOPE.yaml?}
+    CheckScope -- Exists --&gt; MergeScope[Merge scope config]
+    CheckScope -- Not Found --&gt; Error([Error: Scope config not found])
+    MergeScope --&gt; FinalConfig([Final Configuration])
+
+    subgraph Merging Logic
+        ReadCommon
+        MergeScope
+    end
+
+    style ReadCommon fill:#f9f,stroke:#333,stroke-width:2px
+    style MergeScope fill:#bbf,stroke:#333,stroke-width:2px
+    style Error fill:#fbb,stroke:#333,stroke-width:2px
+</code></pre>
+<h3 id="example-file-structure">Example File Structure</h3>
+<pre><code class="language-text">.
+├── config/
+│   ├── config.common.yaml (base values)
+│   ├── config.dev.yaml    (overrides for dev)
+│   └── config.prod.yml    (overrides for prod)
+└── main.go
+</code></pre>
+<h3 id="code">Code</h3>
+<h4 id="using-loaddefault-autoloader">Using LoadDefault (Autoloader)</h4>
+<p>The quickest way to start with default options:</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;log/slog&quot;
+    &quot;os&quot;
+    goscopeconfig &quot;github.com/arielsrv/go-scope-config&quot;
+)
+
+func main() {
+    // Local logger to avoid using the global slog
+    logger := slog.Default()
+
+    // Loads from &quot;config/&quot; folder using SCOPE env var (defaults to &quot;dev&quot;)
+    v, err := goscopeconfig.LoadDefault()
+    if err != nil {
+        logger.Error(&quot;Error loading default config&quot;, &quot;error&quot;, err)
+        os.Exit(1)
+    }
+
+    fmt.Printf(&quot;App Name: %s\n&quot;, v.GetString(&quot;app.name&quot;))
+}
+</code></pre>
+<h3 id="automatic-autoloader-init-function">Automatic Autoloader (init function)</h3>
+<p>The package provides two ways to automatically load the configuration.</p>
+<h4 id="1-using-defaultviper-named-import">1. Using DefaultViper (named import)</h4>
+<p>If you import the package with a name, you can access the pre-initialized
+<code>DefaultViper</code> instance.</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;log/slog&quot;
+    &quot;os&quot;
+    goscopeconfig &quot;github.com/arielsrv/go-scope-config&quot;
+)
+
+func main() {
+    // Local logger to avoid using the global slog
+    logger := slog.Default()
+
+    // Check if there was an error during automatic loading
+    if goscopeconfig.ErrLoad != nil {
+        logger.Error(&quot;Error loading config&quot;, &quot;error&quot;, goscopeconfig.ErrLoad)
+        os.Exit(1)
+    }
+
+    // Use the pre-loaded instance
+    v := goscopeconfig.DefaultViper
+    fmt.Printf(&quot;App Name: %s\n&quot;, v.GetString(&quot;app.name&quot;))
+}
+</code></pre>
+<h4 id="2-using-blank-import-global-viper">2. Using Blank Import (global Viper)</h4>
+<p>If you want to use the standard <code>github.com/spf13/viper</code> package directly,
+you can use the <code>autoload</code> sub-package with a blank import. This will load the
+configuration into Viper's <strong>global instance</strong> (the singleton returned by
+<code>viper.GetViper()</code>).</p>
+<blockquote>
+<p>[!IMPORTANT]
+This is distinct from the <code>DefaultViper</code> provided by the root package,
+which uses its own isolated Viper instance.</p>
+</blockquote>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    _ &quot;github.com/arielsrv/go-scope-config/autoload&quot;
+    &quot;github.com/spf13/viper&quot;
+)
+
+func main() {
+    // Configuration is already loaded into global viper
+    fmt.Printf(&quot;App Name: %s\n&quot;, viper.GetString(&quot;app.name&quot;))
+}
+</code></pre>
+<h4 id="manual-initialization-with-options">Manual Initialization (With Options)</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;log/slog&quot;
+    &quot;os&quot;
+    goscopeconfig &quot;github.com/arielsrv/go-scope-config&quot;
+)
+
+func main() {
+    // Local logger to avoid using the global slog
+    logger := slog.Default()
+
+    // Initializes the loader. 
+    // By default, it looks in the &quot;config/&quot; folder and reads the
+    // &quot;SCOPE&quot; environment variable.
+    loader := goscopeconfig.New(
+        goscopeconfig.WithConfigDir(&quot;custom_configs&quot;),
+        goscopeconfig.WithScopeEnv(&quot;APP_ENV&quot;),
+    )
+
+    if err := loader.Load(); err != nil {
+        logger.Error(&quot;Error loading config&quot;, &quot;error&quot;, err)
+        os.Exit(1)
+    }
+
+    // Access values via Viper
+    v := loader.Viper()
+    fmt.Printf(&quot;App Name: %s\n&quot;, v.GetString(&quot;app.name&quot;))
+    fmt.Printf(&quot;Current Scope: %s\n&quot;, loader.GetScope())
+}
+</code></pre>
+<h2 id="architecture">Architecture</h2>
+<p>The <code>ConfigLoader</code> is the core component. It uses options for configuration:</p>
+<ul>
+<li><code>New(...Option)</code>: Creates a loader.</li>
+<li><a href="config_loader.go">NewWithViper(*viper.Viper, ...Option)</a>: Creates a loader
+  using an existing Viper instance.</li>
+<li><a href="config_loader.go">WithConfigDir(string)</a>: Custom configuration directory.</li>
+<li><a href="config_loader.go">WithScope(string)</a>: Force a specific scope.</li>
+<li><a href="config_loader.go">WithScopeEnv(string)</a>: Custom environment variable for scope.</li>
+<li><a href="config_loader.go">WithLogger(Logger)</a>: Provide a logger for loading information.</li>
+</ul>
+<h3 id="loader-api">Loader API</h3>
+<ul>
+<li><code>loader.Load()</code>: Executes the loading and merging.</li>
+<li><code>loader.Viper()</code>: Returns the internal <code>*viper.Viper</code> instance.</li>
+<li><code>loader.GetScope()</code>: Returns the current detected scope.</li>
+<li><code>loader.GetConfigPath()</code>: Returns the absolute path of the loaded
+  configuration file.</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<p>You can find complete examples in the <code>examples/</code> folder:</p>
+<ul>
+<li><a href="examples/blank-import/main.go">blank-import</a>: Usage with blank import
+  (global Viper).</li>
+<li><a href="examples/autoloader/main.go">autoloader</a>: Quick start using <code>LoadDefault()</code>.</li>
+<li><a href="examples/automatic/main.go">automatic</a>: Accessing the pre-initialized
+  <code>DefaultViper</code>.</li>
+<li><a href="examples/with-logger/main.go">with-logger</a>: Integrating with <code>slog</code>
+  (JSON format).</li>
+<li><a href="examples/custom-scope-env/main.go">custom-scope-env</a>: Using a custom
+  environment variable for scope.</li>
+<li><a href="examples/custom-dir/main.go">custom-dir</a>: Loading configurations from a
+  non-standard directory.</li>
+<li><a href="examples/merge-common/main.go">merge-common</a>: Demonstrating configuration
+  inheritance and overrides.</li>
+<li><a href="examples/uber-fx/main.go">uber-fx</a>: Integration with the Uber-FX
+  dependency injection framework.</li>
+<li><a href="examples/docker-compose/main.go">docker-compose</a>: Running inside a container
+  with Docker Compose, demonstrating environment variable inheritance.</li>
+</ul>
+<h3 id="run-examples">Run examples</h3>
+<p>The examples are in a separate module. To run them, go to the <code>examples</code> directory:</p>
+<pre><code class="language-bash">cd examples
+</code></pre>
+<p>Then run the desired example:</p>
+<pre><code class="language-bash">go run simple/main.go
+go run custom-dir/main.go
+go run merge-common/main.go
+go run autoloader/main.go
+go run automatic/main.go
+go run blank-import/main.go
+go run with-logger/main.go
+go run custom-scope-env/main.go
+go run uber-fx/main.go
+
+#### Docker Compose Example
+
+To run the Docker Compose example:
+
+```bash
+cd examples/docker-compose
+docker compose up
+</code></pre>
+<pre><code>
+## Logger Support
+
+You can provide a logger that satisfies the `Logger` interface (which has a
+`Printf(format string, v ...any)` method). This allows easy integration with
+both the standard `log` package and modern loggers like `slog`.
+
+```go
+// Example with slog (JSON format)
+handler := slog.NewJSONHandler(os.Stdout, nil)
+logger := slog.New(handler)
+
+// Small wrapper to satisfy the Printf interface
+type slogWrapper struct { logger *slog.Logger }
+func (s *slogWrapper) Printf(f string, v ...any) {
+    s.logger.Info(fmt.Sprintf(f, v...))
+}
+
+loader := goscopeconfig.New(
+    goscopeconfig.WithLogger(&amp;slogWrapper{logger: logger}),
+)
+loader.Load()
+</code></pre>
+<h2 id="commands">Commands</h2>
+<p>The project uses <a href="https://taskfile.dev/">Taskfile</a> to manage common tasks:</p>
+<ul>
+<li><code>task test</code>: Run unit tests.</li>
+<li><code>task lint</code>: Run linters (<code>golangci-lint</code>, <code>gofumpt</code>, <code>betteralign</code>).</li>
+<li><code>task audit</code>: Verify modules, run <code>go vet</code> and <code>govulncheck</code>.</li>
+<li><code>task markdown</code>: Lint markdown files.</li>
+<li><code>task coverage</code>: Generate and show coverage report.</li>
+<li><code>task clean</code>: Remove coverage and temporary files.</li>
+<li><code>task build</code>: Build the project.</li>
+</ul>
+<h2 id="environment-variables">Environment Variables</h2>
+<p>In addition to <code>SCOPE</code>, the package enables Viper's <code>AutomaticEnv()</code>, so you can
+override any value from the YAML files using environment variables with the
+corresponding prefix (by default no prefix, with the <code>.</code> separator replaced
+by <code>_</code>).</p>
+<p>Example: <code>APP_NAME=my-app</code> will override the value of <code>app.name</code> in the YAML.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
