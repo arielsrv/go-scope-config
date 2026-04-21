@@ -11,16 +11,16 @@
 - [Configuration Merging (Inheritance)](#configuration-merging-inheritance)
 - [Example File Structure](#example-file-structure)
 - [Code](#code)
-    - [Using LoadDefault (Autoloader)](#using-loaddefault-autoloader)
+  - [Using LoadDefault (Autoloader)](#using-loaddefault-autoloader)
 - [Automatic Autoloader (init function)](#automatic-autoloader-init-function)
-    - [1. Using DefaultViper (named import)](#1-using-defaultviper-named-import)
-    - [2. Using Blank Import (global Viper)](#2-using-blank-import-global-viper)
-    - [Manual Initialization (With Options)](#manual-initialization-with-options)
+  - [1. Using DefaultViper (named import)](#1-using-defaultviper-named-import)
+  - [2. Using Blank Import (global Viper)](#2-using-blank-import-global-viper)
+  - [Manual Initialization (With Options)](#manual-initialization-with-options)
 - [Architecture](#architecture)
-    - [Loader API](#loader-api)
+  - [Loader API](#loader-api)
 - [Examples](#examples)
-    - [Run examples](#run-examples)
-- [Logger Support](#logger-support-1)
+  - [Run examples](#run-examples)
+- [Logger Support](#logger-support)
 - [Commands](#commands)
 - [Environment Variables](#environment-variables)
 
@@ -277,6 +277,7 @@ go run blank-import/main.go
 go run with-logger/main.go
 go run custom-scope-env/main.go
 go run uber-fx/main.go
+```
 
 #### Docker Compose Example
 
@@ -287,9 +288,6 @@ cd examples/docker-compose
 docker compose up
 ```
 
-```
-
-<a id="logger-support"></a>
 ## Logger Support
 
 You can provide a logger that satisfies the `Logger` interface (which has a

@@ -24,6 +24,7 @@
 - [Examples](#examples)
   - [Run examples](#run-examples)
 - [Logger Support](#logger-support)
+- [Configuration Value Priority](#configuration-value-priority)
 - [Commands](#commands)
 - [Environment Variables](#environment-variables)
 
@@ -280,6 +281,7 @@ go run blank-import/main.go
 go run with-logger/main.go
 go run custom-scope-env/main.go
 go run uber-fx/main.go
+```
 
 #### Docker Compose Example
 
@@ -288,7 +290,6 @@ To run the Docker Compose example:
 ```bash
 cd examples/docker-compose
 docker compose up
-```
 ```
 
 ## Logger Support
@@ -326,11 +327,45 @@ The project uses [Taskfile](https://taskfile.dev/) to manage common tasks:
 - `task clean`: Remove coverage and temporary files.
 - `task build`: Build the project.
 
+## Configuration Value Priority
+
+The package uses Viper's resolution order. When the same key is defined in
+multiple sources, the following priority applies (**highest wins**):
+
+| Priority        | Source                                       | Example              |
+| --------------- | -------------------------------------------- | -------------------- |
+| **1 — Highest** | Environment variables (`AutomaticEnv`)       | `APP_NAME=myapp`     |
+| **2**           | Scope-specific config file                   | `config.prod.yaml`   |
+| **3 — Lowest**  | Common config file                           | `config.common.yaml` |
+
+Key-mapping rule: dots (`.`) in YAML keys are replaced by underscores (`_`) in
+environment variable names.
+
+```text
+app.name  →  APP_NAME
+app.port  →  APP_PORT
+db.host   →  DB_HOST
+```
+
+> [!IMPORTANT]
+> Environment variables **always override** any value defined in the YAML files.
+> This follows the [12-Factor App](https://12factor.net/config) principle and is
+> especially useful in containerised environments (Docker, Kubernetes) where
+> secrets or runtime values are injected via env vars.
+
+### Override Examples
+
+```bash
+# Overrides app.name regardless of what is in the YAML files
+APP_NAME=production-service go run main.go
+
+# Works even if the key does NOT exist in any YAML file
+NEW_KEY=value go run main.go   # v.GetString("new.key") → "value"
+```
+
 ## Environment Variables
 
-In addition to `SCOPE`, the package enables Viper's `AutomaticEnv()`, so you can
-override any value from the YAML files using environment variables with the
-corresponding prefix (by default no prefix, with the `.` separator replaced
-by `_`).
-
-Example: `APP_NAME=my-app` will override the value of `app.name` in the YAML.
+| Variable      | Default | Description                                                      |
+| ------------- | ------- | ---------------------------------------------------------------- |
+| `SCOPE`       | `dev`   | Selects the scope config file. Configurable via `WithScopeEnv`. |
+| `<ANY_KEY>`   | -       | Overrides YAML values at runtime (dots replaced by underscores). |

@@ -1,0 +1,14 @@
+{
+  // markdownlint-cli2 configuration
+  "config": {
+    "MD013": {
+      "line_length": 140,
+      "tables": false,
+      "code_blocks": false
+    },
+    "MD060": {
+      "style": "consistent"
+    }
+  }
+}
+
