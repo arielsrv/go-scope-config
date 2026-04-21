@@ -1,3 +1,5 @@
 app:
   name: My App Dev
   port: 8080
+rest:
+  connections: 100

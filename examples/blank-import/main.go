@@ -15,4 +15,5 @@ func main() {
 	// We use the standard viper package directly
 	fmt.Printf("App Name: %s\n", viper.GetString("app.name"))
 	fmt.Printf("App Port: %d\n", viper.GetInt("app.port"))
+	fmt.Printf("REST Connections: %d\n", viper.GetInt("rest.connections"))
 }
