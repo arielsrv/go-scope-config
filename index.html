@@ -469,10 +469,38 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Run examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-compose-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker Compose Example
+      
+    </span>
+  </a>
+  
 </li>
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logger-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logger Support
+      
+    </span>
+  </a>
   
 </li>
       
@@ -720,10 +748,38 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Run examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-compose-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker Compose Example
+      
+    </span>
+  </a>
+  
 </li>
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logger-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logger Support
+      
+    </span>
+  </a>
   
 </li>
       
@@ -776,25 +832,17 @@
 <li><a href="#usage">Usage</a></li>
 <li><a href="#configuration-merging-inheritance">Configuration Merging (Inheritance)</a></li>
 <li><a href="#example-file-structure">Example File Structure</a></li>
-<li><a href="#code">Code</a><ul>
+<li><a href="#code">Code</a></li>
 <li><a href="#using-loaddefault-autoloader">Using LoadDefault (Autoloader)</a></li>
-</ul>
-</li>
-<li><a href="#automatic-autoloader-init-function">Automatic Autoloader (init function)</a><ul>
+<li><a href="#automatic-autoloader-init-function">Automatic Autoloader (init function)</a></li>
 <li><a href="#1-using-defaultviper-named-import">1. Using DefaultViper (named import)</a></li>
 <li><a href="#2-using-blank-import-global-viper">2. Using Blank Import (global Viper)</a></li>
 <li><a href="#manual-initialization-with-options">Manual Initialization (With Options)</a></li>
-</ul>
-</li>
-<li><a href="#architecture">Architecture</a><ul>
+<li><a href="#architecture">Architecture</a></li>
 <li><a href="#loader-api">Loader API</a></li>
-</ul>
-</li>
-<li><a href="#examples">Examples</a><ul>
+<li><a href="#examples">Examples</a></li>
 <li><a href="#run-examples">Run examples</a></li>
-</ul>
-</li>
-<li><a href="#logger-support-1">Logger Support</a></li>
+<li><a href="#logger-support">Logger Support</a></li>
 <li><a href="#commands">Commands</a></li>
 <li><a href="#environment-variables">Environment Variables</a></li>
 </ul>
@@ -1010,25 +1058,17 @@ go run blank-import/main.go
 go run with-logger/main.go
 go run custom-scope-env/main.go
 go run uber-fx/main.go
-
-#### Docker Compose Example
-
-To run the Docker Compose example:
-
-```bash
-cd examples/docker-compose
+</code></pre>
+<h4 id="docker-compose-example">Docker Compose Example</h4>
+<p>To run the Docker Compose example:</p>
+<pre><code class="language-bash">cd examples/docker-compose
 docker compose up
 </code></pre>
-<pre><code>
-&lt;a id=&quot;logger-support&quot;&gt;&lt;/a&gt;
-## Logger Support
-
-You can provide a logger that satisfies the `Logger` interface (which has a
-`Printf(format string, v ...any)` method). This allows easy integration with
-both the standard `log` package and modern loggers like `slog`.
-
-```go
-// Example with slog (JSON format)
+<h2 id="logger-support">Logger Support</h2>
+<p>You can provide a logger that satisfies the <code>Logger</code> interface (which has a
+<code>Printf(format string, v ...any)</code> method). This allows easy integration with
+both the standard <code>log</code> package and modern loggers like <code>slog</code>.</p>
+<pre><code class="language-go">// Example with slog (JSON format)
 handler := slog.NewJSONHandler(os.Stdout, nil)
 logger := slog.New(handler)
 
