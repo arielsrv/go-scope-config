@@ -7,6 +7,11 @@ env:
   COVERAGE_OUT_FILE: coverage.out
   COVERAGE_HTML_FILE: coverage.html
 
+vars:
+  # All packages excluding generated mocks (used with -coverpkg to exclude from coverage)
+  COVERAGE_PACKAGES:
+    sh: go list ./... | grep -v '/mocks' | tr '\n' ',' | sed 's/,$//'
+
 tasks:
 
   markdown:
@@ -59,14 +64,14 @@ tasks:
   coverage:
     desc: Generate and show coverage report
     cmds:
-      - go test $SOURCE_FOLDER -covermode=count -coverprofile=$COVERAGE_OUT_FILE
+      - go test $SOURCE_FOLDER -covermode=count -coverprofile=$COVERAGE_OUT_FILE -coverpkg={{.COVERAGE_PACKAGES}}
       - go tool cover -html $COVERAGE_OUT_FILE -o $COVERAGE_HTML_FILE
       - go tool cover -func=$COVERAGE_OUT_FILE -o=$COVERAGE_OUT_FILE
 
   coverage:report:
     desc: Generate coverage profile without showing it
     cmds:
-      - go test $SOURCE_FOLDER -coverprofile=coverage-report.out
+      - go test $SOURCE_FOLDER -coverprofile=coverage-report.out -coverpkg={{.COVERAGE_PACKAGES}}
 
   clean:
     desc: Remove coverage and temporary files

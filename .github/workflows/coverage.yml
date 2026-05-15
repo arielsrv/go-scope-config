@@ -23,7 +23,8 @@ jobs:
 
       - name: Run coverage
         run: |
-          go test ./... -covermode=count -coverprofile=coverage.out
+          PKGS=$(go list ./... | grep -v '/mocks' | tr '\n' ',' | sed 's/,$//')
+          go test ./... -covermode=count -coverprofile=coverage.out -coverpkg=$PKGS
           COVERAGE=$(go tool cover -func=coverage.out | grep '^total:' | awk '{print $3}' | tr -d '%')
           echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
 
