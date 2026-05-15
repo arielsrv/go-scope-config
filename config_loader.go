@@ -8,6 +8,7 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/samber/lo"
 	"github.com/spf13/viper"
 )
 
@@ -139,6 +140,12 @@ func (r *ConfigLoader) Load() error {
 	scopeConfigName := fmt.Sprintf("config.%s", r.scope)
 	r.viper.SetConfigName(scopeConfigName)
 
+	// Capture values before merge to detect overrides
+	var beforeMerge map[string]any
+	if r.logger != nil {
+		beforeMerge = flattenMap("", r.viper.AllSettings())
+	}
+
 	err = r.viper.MergeInConfig()
 	if err != nil {
 		return fmt.Errorf("error merging configuration file for scope %s in %s: %w", r.scope, r.configDir, err)
@@ -147,8 +154,29 @@ func (r *ConfigLoader) Load() error {
 	r.configPath = r.viper.ConfigFileUsed()
 	if r.logger != nil {
 		r.logger.Printf("Loaded scope-specific configuration (%s) from: %s", r.scope, r.configPath)
+
+		afterMerge := flattenMap("", r.viper.AllSettings())
+		for key, newVal := range afterMerge {
+			if oldVal, existed := beforeMerge[key]; existed && fmt.Sprintf("%v", oldVal) != fmt.Sprintf("%v", newVal) {
+				r.logger.Printf("Override: key '%s' changed from '%v' to '%v'", key, oldVal, newVal)
+			}
+		}
 	}
 	return nil
+}
+
+// flattenMap recursively flattens a nested map into dot-separated keys.
+func flattenMap(prefix string, m map[string]any) map[string]any {
+	result := make(map[string]any)
+	for _, entry := range lo.Entries(m) {
+		key := lo.Ternary(prefix == "", entry.Key, prefix+"."+entry.Key)
+		if nested, ok := entry.Value.(map[string]any); ok {
+			result = lo.Assign(result, flattenMap(key, nested))
+		} else {
+			result[key] = entry.Value
+		}
+	}
+	return result
 }
 
 var (

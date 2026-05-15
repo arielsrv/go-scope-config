@@ -253,6 +253,54 @@ app:
 			t.Fatalf("Could not load configuration: %v", err)
 		}
 	})
+
+	t.Run( //nolint:paralleltest // subtests share tmpDir with read/write conflicts
+		"With logger shows overridden keys",
+		func(t *testing.T) {
+			subTmpDir := t.TempDir()
+
+			commonConfig := filepath.Join(subTmpDir, "config.common.yaml")
+			err = os.WriteFile(
+				commonConfig,
+				[]byte("app:\n  name: base-app\n  version: 1.0.0\ndatabase:\n  host: localhost\n"),
+				0o644,
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			devConfig = filepath.Join(subTmpDir, "config.dev.yaml")
+			err = os.WriteFile(devConfig, []byte("app:\n  name: dev-app\n"), 0o644)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			mockLogger := goscopeconfigmocks.NewMockLogger(t)
+
+			// Expect the override log for app.name
+			mockLogger.EXPECT().Printf(
+				mock.Anything,
+				"app.name",
+				mock.Anything,
+				mock.Anything,
+			).Once()
+
+			// Optional logs (loading messages, loaded files, non-overridden keys, etc.)
+			mockLogger.EXPECT().Printf(mock.Anything, mock.Anything).Maybe()
+			mockLogger.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything).Maybe()
+			mockLogger.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Maybe()
+
+			l := goscopeconfig.New(
+				goscopeconfig.WithConfigDir(subTmpDir),
+				goscopeconfig.WithScope("dev"),
+				goscopeconfig.WithLogger(mockLogger),
+			)
+			err = l.Load()
+			if err != nil {
+				t.Fatalf("Could not load configuration: %v", err)
+			}
+		},
+	)
 }
 
 func TestDefaultViper(t *testing.T) {

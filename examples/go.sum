@@ -1,5 +1,5 @@
-github.com/arielsrv/go-scope-config v1.2.6 h1:ky13wUK/eV7wLFykJ7Q2jaBHTRjKKkRL1dJhSzEYZuo=
-github.com/arielsrv/go-scope-config v1.2.6/go.mod h1:UOvuZfugiqZPRoUnwttYcBCxdilT35bTFqOabIRb9WQ=
+github.com/arielsrv/go-scope-config v1.3.1 h1:mT+1pb9OlAzal/dU57KODzSCiWX5xm3Og9AhOHqrvJk=
+github.com/arielsrv/go-scope-config v1.3.1/go.mod h1:tFaxyql530S1tz75fi+3stK7k0NQDKHXVslOsZFxDmA=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/frankban/quicktest v1.14.6 h1:7Xjx+VpznH+oBnejlPUj8oUpdxnVs4f8XU8WnHkI4W8=
