@@ -13,9 +13,9 @@ import (
 	goscopeconfigmocks "github.com/arielsrv/go-scope-config/mocks"
 )
 
-var defaultConfig = goscopeconfig.DefaultConfig()
+var defaultConfig = goscopeconfig.DefaultConfig() //nolint:gochecknoglobals // shared across multiple test functions in this package
 
-func TestNew(t *testing.T) {
+func TestNew(t *testing.T) { //nolint:tparallel // subtests use t.Setenv; incompatible with t.Parallel
 	// Clear environment variables for a clean test
 	err := os.Unsetenv(defaultConfig.ScopeEnv)
 	if err != nil {
@@ -23,6 +23,7 @@ func TestNew(t *testing.T) {
 	}
 
 	t.Run("Default ConfigLoader", func(t *testing.T) {
+		t.Parallel()
 		l := goscopeconfig.New()
 		if l.GetScope() != defaultConfig.Scope {
 			t.Errorf("Expected scope %s, got %s", defaultConfig.Scope, l.GetScope())
@@ -44,6 +45,7 @@ func TestNew(t *testing.T) {
 	})
 
 	t.Run("With Custom Option WithScope", func(t *testing.T) {
+		t.Parallel()
 		l := goscopeconfig.New(goscopeconfig.WithScope("staging"))
 		if l.GetScope() != "staging" {
 			t.Errorf("Expected scope staging, got %s", l.GetScope())
@@ -51,6 +53,7 @@ func TestNew(t *testing.T) {
 	})
 
 	t.Run("NewWithViper", func(t *testing.T) {
+		t.Parallel()
 		v := viper.New()
 		l := goscopeconfig.NewWithViper(v, goscopeconfig.WithScope("custom"))
 		if l.Viper() != v {
@@ -71,7 +74,9 @@ func TestNew(t *testing.T) {
 	})
 }
 
-func TestLoad(t *testing.T) {
+func TestLoad(t *testing.T) { //nolint:gocognit,tparallel // subtests share tmpDir; cannot be parallelized
+	t.Parallel()
+
 	// Create a temporary directory for tests
 	tmpDir := t.TempDir()
 
@@ -88,117 +93,135 @@ func TestLoad(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Run("Load dev config", func(t *testing.T) {
-		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("dev"))
-		err = l.Load()
-		if err != nil {
-			t.Fatalf("Could not load configuration: %v", err)
-		}
-		if name := l.Viper().GetString("app.name"); name != "test-dev" {
-			t.Errorf("Expected test-dev, got %s", name)
-		}
-	})
+	t.Run( //nolint:paralleltest // subtests share tmpDir with read/write conflicts; cannot be parallelized
+		"Load dev config",
+		func(t *testing.T) {
+			l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("dev"))
+			err = l.Load()
+			if err != nil {
+				t.Fatalf("Could not load configuration: %v", err)
+			}
+			if name := l.Viper().GetString("app.name"); name != "test-dev" {
+				t.Errorf("Expected test-dev, got %s", name)
+			}
+		},
+	)
 
-	t.Run("Load prod config (yml extension)", func(t *testing.T) {
-		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("prod"))
-		err = l.Load()
-		if err != nil {
-			t.Fatalf("Could not load configuration: %v", err)
-		}
-		if name := l.Viper().GetString("app.name"); name != "test-prod" {
-			t.Errorf("Expected test-prod, got %s", name)
-		}
-	})
+	t.Run( //nolint:paralleltest // subtests share tmpDir with read/write conflicts; cannot be parallelized
+		"Load prod config (yml extension)",
+		func(t *testing.T) {
+			l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("prod"))
+			err = l.Load()
+			if err != nil {
+				t.Fatalf("Could not load configuration: %v", err)
+			}
+			if name := l.Viper().GetString("app.name"); name != "test-prod" {
+				t.Errorf("Expected test-prod, got %s", name)
+			}
+		},
+	)
 
-	t.Run("Config not found error", func(t *testing.T) {
-		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("missing"))
-		err = l.Load()
-		if err == nil {
-			t.Error("An error was expected when the configuration file does not exist")
-		}
-	})
+	t.Run( //nolint:paralleltest // subtests share tmpDir with read/write conflicts; cannot be parallelized
+		"Config not found error",
+		func(t *testing.T) {
+			l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("missing"))
+			err = l.Load()
+			if err == nil {
+				t.Error("An error was expected when the configuration file does not exist")
+			}
+		},
+	)
 
-	t.Run("Invalid YAML file", func(t *testing.T) {
-		invalidConfig := filepath.Join(tmpDir, "config.invalid.yaml")
-		err = os.WriteFile(invalidConfig, []byte("app: - name: invalid: yaml: content:"), 0o644)
-		if err != nil {
-			t.Fatal(err)
-		}
-		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("invalid"))
-		err = l.Load()
-		if err == nil {
-			t.Error("Expected error for invalid yaml content, got nil")
-		}
-	})
+	t.Run( //nolint:paralleltest // subtests share tmpDir with read/write conflicts; cannot be parallelized
+		"Invalid YAML file",
+		func(t *testing.T) {
+			invalidConfig := filepath.Join(tmpDir, "config.invalid.yaml")
+			err = os.WriteFile(invalidConfig, []byte("app: - name: invalid: yaml: content:"), 0o644)
+			if err != nil {
+				t.Fatal(err)
+			}
+			l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("invalid"))
+			err = l.Load()
+			if err == nil {
+				t.Error("Expected error for invalid yaml content, got nil")
+			}
+		},
+	)
 
-	t.Run("Invalid common YAML file", func(t *testing.T) {
-		// New temp dir for this subtest to avoid interfering with others
-		subTmpDir := t.TempDir()
-		commonInvalid := filepath.Join(subTmpDir, "config.common.yaml")
-		err = os.WriteFile(commonInvalid, []byte("app: - name: invalid: yaml: content:"), 0o644)
-		if err != nil {
-			t.Fatal(err)
-		}
+	t.Run( //nolint:paralleltest // subtests share tmpDir with read/write conflicts; cannot be parallelized
+		"Invalid common YAML file",
+		func(t *testing.T) {
+			// New temp dir for this subtest to avoid interfering with others
+			subTmpDir := t.TempDir()
+			commonInvalid := filepath.Join(subTmpDir, "config.common.yaml")
+			err = os.WriteFile(commonInvalid, []byte("app: - name: invalid: yaml: content:"), 0o644)
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		l := goscopeconfig.New(goscopeconfig.WithConfigDir(subTmpDir), goscopeconfig.WithScope("dev"))
-		err = l.Load()
-		if err == nil {
-			t.Error("Expected error for invalid common yaml content, got nil")
-		}
-	})
+			l := goscopeconfig.New(goscopeconfig.WithConfigDir(subTmpDir), goscopeconfig.WithScope("dev"))
+			err = l.Load()
+			if err == nil {
+				t.Error("Expected error for invalid common yaml content, got nil")
+			}
+		},
+	)
 
-	t.Run("Merge with common config", func(t *testing.T) {
-		// Create common config file
-		commonConfig := filepath.Join(tmpDir, "config.common.yaml")
-		commonContent := `
+	t.Run( //nolint:paralleltest // subtests share tmpDir with read/write conflicts; cannot be parallelized
+		"Merge with common config",
+		func(t *testing.T) {
+			// Create common config file
+			commonConfig := filepath.Join(tmpDir, "config.common.yaml")
+			commonContent := `
 app:
   name: base-app
   version: 1.0.0
 database:
   host: localhost
 `
-		err = os.WriteFile(commonConfig, []byte(commonContent), 0o644)
-		if err != nil {
-			t.Fatal(err)
-		}
+			err = os.WriteFile(commonConfig, []byte(commonContent), 0o644)
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		// Create dev config file that overrides some values
-		devConfig = filepath.Join(tmpDir, "config.dev.yaml")
-		devContent := `
+			// Create dev config file that overrides some values
+			devConfig = filepath.Join(tmpDir, "config.dev.yaml")
+			devContent := `
 app:
   name: dev-app
 `
-		err = os.WriteFile(devConfig, []byte(devContent), 0o644)
-		if err != nil {
-			t.Fatal(err)
-		}
+			err = os.WriteFile(devConfig, []byte(devContent), 0o644)
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("dev"))
-		err = l.Load()
-		if err != nil {
-			t.Fatalf("Could not load configuration: %v", err)
-		}
+			l := goscopeconfig.New(goscopeconfig.WithConfigDir(tmpDir), goscopeconfig.WithScope("dev"))
+			err = l.Load()
+			if err != nil {
+				t.Fatalf("Could not load configuration: %v", err)
+			}
 
-		v := l.Viper()
-		// Overridden value
-		if name := v.GetString("app.name"); name != "dev-app" {
-			t.Errorf("Expected dev-app, got %s", name)
-		}
-		// Common value (inherited)
-		if version := v.GetString("app.version"); version != "1.0.0" {
-			t.Errorf("Expected 1.0.0, got %s", version)
-		}
-		// Another common value
-		if host := v.GetString("database.host"); host != "localhost" {
-			t.Errorf("Expected localhost, got %s", host)
-		}
+			v := l.Viper()
+			// Overridden value
+			if name := v.GetString("app.name"); name != "dev-app" {
+				t.Errorf("Expected dev-app, got %s", name)
+			}
+			// Common value (inherited)
+			if version := v.GetString("app.version"); version != "1.0.0" {
+				t.Errorf("Expected 1.0.0, got %s", version)
+			}
+			// Another common value
+			if host := v.GetString("database.host"); host != "localhost" {
+				t.Errorf("Expected localhost, got %s", host)
+			}
 
-		if path := l.GetConfigPath(); path == "" {
-			t.Error("Expected non-empty config path")
-		}
-	})
+			if path := l.GetConfigPath(); path == "" {
+				t.Error("Expected non-empty config path")
+			}
+		},
+	)
 
-	t.Run("With logger", func(t *testing.T) {
+	t.Run("With logger", func(t *testing.T) { //nolint:paralleltest // subtests share tmpDir with read/write conflicts
 		mockLogger := goscopeconfigmocks.NewMockLogger(t)
 		commonConfig := filepath.Join(tmpDir, "config.common.yaml")
 		err = os.WriteFile(commonConfig, []byte("app:\n  base: true\n"), 0o644)
@@ -233,6 +256,7 @@ app:
 }
 
 func TestDefaultViper(t *testing.T) {
+	t.Parallel()
 	// For this test, goscopeconfig.DefaultViper was already initialized by init() when the test started.
 	// Since we are running tests from the package root, and "config/config.dev.yaml" exists,
 	// goscopeconfig.DefaultViper should be loaded if the tests were started with the right environment.
@@ -250,7 +274,7 @@ func TestDefaultViper(t *testing.T) {
 	_ = goscopeconfig.DefaultViper.GetString("app.name")
 }
 
-func TestLoadDefault(t *testing.T) {
+func TestLoadDefault(t *testing.T) { //nolint:paralleltest // calls t.Chdir; cannot be parallel in Go 1.26+
 	// Create a temporary directory and configuration files for the test
 	tmpDir := t.TempDir()
 
@@ -271,31 +295,37 @@ func TestLoadDefault(t *testing.T) {
 	// t.Chdir automatically restores the working directory when the test finishes.
 	t.Chdir(tmpDir)
 
-	t.Run("LoadDefault with dev scope (default)", func(t *testing.T) {
-		err = os.Unsetenv(defaultConfig.ScopeEnv)
-		if err != nil {
-			return
-		}
-		v, dfltErr := goscopeconfig.LoadDefault()
-		if dfltErr != nil {
-			t.Fatalf("LoadDefault failed: %v", dfltErr)
-		}
-		if name := v.GetString("app.name"); name != "default-dev" {
-			t.Errorf("Expected default-dev, got %s", name)
-		}
-	})
+	t.Run( //nolint:paralleltest // uses os.Unsetenv global state; cannot be parallelized
+		"LoadDefault with dev scope (default)",
+		func(t *testing.T) {
+			err = os.Unsetenv(defaultConfig.ScopeEnv)
+			if err != nil {
+				return
+			}
+			v, dfltErr := goscopeconfig.LoadDefault()
+			if dfltErr != nil {
+				t.Fatalf("LoadDefault failed: %v", dfltErr)
+			}
+			if name := v.GetString("app.name"); name != "default-dev" {
+				t.Errorf("Expected default-dev, got %s", name)
+			}
+		},
+	)
 
-	t.Run("LoadDefault with error (missing directory)", func(t *testing.T) {
-		// Change to an empty temporary directory
-		otherTmp := t.TempDir()
-		t.Chdir(otherTmp)
+	t.Run( //nolint:paralleltest // uses t.Chdir global process state; cannot be parallelized
+		"LoadDefault with error (missing directory)",
+		func(t *testing.T) {
+			// Change to an empty temporary directory
+			otherTmp := t.TempDir()
+			t.Chdir(otherTmp)
 
-		v, dfltErr := goscopeconfig.LoadDefault()
-		if dfltErr == nil {
-			t.Error("Expected error when loading default config from empty directory, got nil")
-		}
-		if v != nil {
-			t.Error("Expected nil Viper instance on error")
-		}
-	})
+			v, dfltErr := goscopeconfig.LoadDefault()
+			if dfltErr == nil {
+				t.Error("Expected error when loading default config from empty directory, got nil")
+			}
+			if v != nil {
+				t.Error("Expected nil Viper instance on error")
+			}
+		},
+	)
 }

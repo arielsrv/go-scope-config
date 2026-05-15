@@ -8,7 +8,8 @@ import (
 	_ "github.com/arielsrv/go-scope-config/autoload"
 )
 
-func TestAutoload(_ *testing.T) {
+func TestAutoload(t *testing.T) {
+	t.Parallel()
 	// The init() function in autoload.go runs automatically when this package is imported.
 	// It should have loaded the configuration into the global viper instance.
 

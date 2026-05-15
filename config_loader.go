@@ -29,7 +29,7 @@ func DefaultConfig() Defaults {
 	}
 }
 
-var defaultConfig = DefaultConfig()
+var defaultConfig = DefaultConfig() //nolint:gochecknoglobals // immutable package-level defaults used across multiple functions
 
 // ConfigLoader handles loading configurations based on the scope.
 type ConfigLoader struct {
@@ -154,12 +154,12 @@ func (r *ConfigLoader) Load() error {
 var (
 	// DefaultViper is the automatically loaded Viper instance.
 	// It is initialized during package loading via init().
-	DefaultViper *viper.Viper
+	DefaultViper *viper.Viper //nolint:gochecknoglobals // public API: exported global intentionally set by init()
 	// ErrLoad stores any error encountered during automatic loading.
 	ErrLoad error
 )
 
-func init() {
+func init() { //nolint:gochecknoinits // init() populates the public DefaultViper and ErrLoad package-level API
 	DefaultViper, ErrLoad = LoadDefault()
 }
 
