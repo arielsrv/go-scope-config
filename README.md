@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/arielsrv/go-scope-config/actions/workflows/go.yml/badge.svg)](https://github.com/arielsrv/go-scope-config/actions/workflows/go.yml)
 [![Lint Status](https://github.com/arielsrv/go-scope-config/actions/workflows/lint.yml/badge.svg)](https://github.com/arielsrv/go-scope-config/actions/workflows/lint.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Coverage](https://img.shields.io/badge/Coverage-64.6%25-yellow)
+![Coverage](https://img.shields.io/badge/Coverage-100.0%25-brightgreen)
 
 ## Table of Contents
 
