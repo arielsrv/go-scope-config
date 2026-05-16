@@ -18,6 +18,7 @@ type Defaults struct {
 	Scope      string
 	ScopeEnv   string
 	CommonName string
+	LocalName  string
 }
 
 // DefaultConfig returns the default configuration values.
@@ -27,6 +28,7 @@ func DefaultConfig() Defaults {
 		Scope:      "dev",
 		ScopeEnv:   "SCOPE",
 		CommonName: "config.common",
+		LocalName:  "config.local",
 	}
 }
 
@@ -34,12 +36,13 @@ var defaultConfig = DefaultConfig() //nolint:gochecknoglobals // immutable packa
 
 // ConfigLoader handles loading configurations based on the scope.
 type ConfigLoader struct {
-	logger     Logger
-	viper      *viper.Viper
-	configDir  string
-	scope      string
-	scopeEnv   string
-	configPath string
+	logger        Logger
+	viper         *viper.Viper
+	configDir     string
+	scope         string
+	scopeEnv      string
+	configPath    string
+	localOverride bool
 }
 
 // Logger is a simple interface for logging.
@@ -77,6 +80,21 @@ func WithScopeEnv(envName string) Option {
 func WithLogger(logger Logger) Option {
 	return func(loader *ConfigLoader) {
 		loader.logger = logger
+	}
+}
+
+// WithLocalOverride enables loading an optional machine-local override file
+// (config.local.yaml / config.local.yml) on top of the common and scope-specific
+// configurations.
+//
+// The local file is intended for developer-specific overrides (localhost ports,
+// local DB credentials, mocks, etc.) and is typically gitignored. If the file
+// does not exist, Load() does not fail.
+//
+// Effective precedence (highest wins): env vars > config.local > config.[scope] > config.common.
+func WithLocalOverride() Option {
+	return func(loader *ConfigLoader) {
+		loader.localOverride = true
 	}
 }
 
@@ -154,15 +172,62 @@ func (r *ConfigLoader) Load() error {
 	r.configPath = r.viper.ConfigFileUsed()
 	if r.logger != nil {
 		r.logger.Printf("Loaded scope-specific configuration (%s) from: %s", r.scope, r.configPath)
+		r.logOverrides("Override", beforeMerge)
+	}
 
-		afterMerge := flattenMap("", r.viper.AllSettings())
-		for key, newVal := range afterMerge {
-			if oldVal, existed := beforeMerge[key]; existed && fmt.Sprintf("%v", oldVal) != fmt.Sprintf("%v", newVal) {
-				r.logger.Printf("Override: key '%s' changed from '%v' to '%v'", key, oldVal, newVal)
-			}
+	// 3. Optionally merge config.local.yaml on top (machine-local developer overrides).
+	if r.localOverride {
+		err = r.mergeLocalOverride()
+		if err != nil {
+			return err
 		}
 	}
 	return nil
+}
+
+// mergeLocalOverride merges the optional config.local.{yaml,yml} file on top of
+// the already-loaded common + scope configuration. A missing file is not an
+// error (the local override is intended to be gitignored and per-developer).
+func (r *ConfigLoader) mergeLocalOverride() error {
+	r.viper.SetConfigName(defaultConfig.LocalName)
+
+	var beforeLocal map[string]any
+	if r.logger != nil {
+		beforeLocal = flattenMap("", r.viper.AllSettings())
+	}
+
+	err := r.viper.MergeInConfig()
+	if err != nil {
+		// Local override file is optional: missing file is not an error.
+		if _, ok := errors.AsType[viper.ConfigFileNotFoundError](err); !ok {
+			return fmt.Errorf("error merging local override configuration: %w", err)
+		}
+		if r.logger != nil {
+			r.logger.Printf(
+				"No local override file found (%s.{yaml,yml}) in %s, skipping",
+				defaultConfig.LocalName,
+				r.configDir,
+			)
+		}
+		return nil
+	}
+
+	if r.logger != nil {
+		r.logger.Printf("Loaded local override configuration from: %s", r.viper.ConfigFileUsed())
+		r.logOverrides("Local override", beforeLocal)
+	}
+	return nil
+}
+
+// logOverrides emits a log line for each key whose value changed compared to
+// the provided baseline snapshot. Caller must ensure r.logger != nil.
+func (r *ConfigLoader) logOverrides(prefix string, before map[string]any) {
+	after := flattenMap("", r.viper.AllSettings())
+	for key, newVal := range after {
+		if oldVal, existed := before[key]; existed && fmt.Sprintf("%v", oldVal) != fmt.Sprintf("%v", newVal) {
+			r.logger.Printf("%s: key '%s' changed from '%v' to '%v'", prefix, key, oldVal, newVal)
+		}
+	}
 }
 
 // flattenMap recursively flattens a nested map into dot-separated keys.

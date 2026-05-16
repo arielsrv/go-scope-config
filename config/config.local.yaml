@@ -1,0 +1,7 @@
+# Shared developer-local override file used by examples that enable
+# WithLocalOverride() or import the autoload/local subpackage.
+# In a real project this file would be in .gitignore.
+database:
+  host: localhost
+  port: 15432
+

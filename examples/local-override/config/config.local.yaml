@@ -1,0 +1,8 @@
+# This file simulates a developer's machine-local overrides.
+# In a real project, this file would be gitignored.
+database:
+  host: localhost
+  port: 15432
+features:
+  cache: false
+

@@ -1,0 +1,10 @@
+app:
+  name: my-service
+  version: 1.0.0
+database:
+  host: db.shared.internal
+  port: 5432
+  name: myservice
+features:
+  cache: true
+

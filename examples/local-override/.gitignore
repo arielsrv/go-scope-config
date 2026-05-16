@@ -1,0 +1,4 @@
+# Per-developer local overrides (kept committed only in this example for demo purposes).
+# In a real project, uncomment the next line:
+# config/config.local.yaml
+

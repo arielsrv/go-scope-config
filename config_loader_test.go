@@ -277,9 +277,10 @@ app:
 
 			mockLogger := goscopeconfigmocks.NewMockLogger(t)
 
-			// Expect the override log for app.name
+			// Expect the override log for app.name (format, prefix, key, oldVal, newVal)
 			mockLogger.EXPECT().Printf(
 				mock.Anything,
+				"Override",
 				"app.name",
 				mock.Anything,
 				mock.Anything,
@@ -289,6 +290,9 @@ app:
 			mockLogger.EXPECT().Printf(mock.Anything, mock.Anything).Maybe()
 			mockLogger.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything).Maybe()
 			mockLogger.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Maybe()
+			mockLogger.EXPECT().
+				Printf(mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+				Maybe()
 
 			l := goscopeconfig.New(
 				goscopeconfig.WithConfigDir(subTmpDir),
@@ -376,4 +380,166 @@ func TestLoadDefault(t *testing.T) { //nolint:paralleltest // calls t.Chdir; can
 			}
 		},
 	)
+}
+
+func TestLocalOverride(t *testing.T) { //nolint:gocognit // subtests cover multiple scenarios in one function
+	t.Parallel()
+
+	writeFile := func(t *testing.T, path, content string) {
+		t.Helper()
+		err := os.WriteFile(path, []byte(content), 0o644)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	t.Run("Local file overrides scope and common", func(t *testing.T) {
+		t.Parallel()
+		dir := t.TempDir()
+		writeFile(t, filepath.Join(dir, "config.common.yaml"),
+			"app:\n  name: base\n  version: 1.0.0\ndatabase:\n  host: db.prod\n  port: 5432\n")
+		writeFile(t, filepath.Join(dir, "config.dev.yaml"),
+			"app:\n  name: dev-app\ndatabase:\n  host: db.dev\n")
+		writeFile(t, filepath.Join(dir, "config.local.yaml"),
+			"database:\n  host: localhost\n  port: 15432\n")
+
+		l := goscopeconfig.New(
+			goscopeconfig.WithConfigDir(dir),
+			goscopeconfig.WithScope("dev"),
+			goscopeconfig.WithLocalOverride(),
+		)
+		err := l.Load()
+		if err != nil {
+			t.Fatalf("Load failed: %v", err)
+		}
+		v := l.Viper()
+		// Local wins
+		if got := v.GetString("database.host"); got != "localhost" {
+			t.Errorf("database.host: expected localhost, got %s", got)
+		}
+		if got := v.GetInt("database.port"); got != 15432 {
+			t.Errorf("database.port: expected 15432, got %d", got)
+		}
+		// Scope still wins where local is silent
+		if got := v.GetString("app.name"); got != "dev-app" {
+			t.Errorf("app.name: expected dev-app, got %s", got)
+		}
+		// Common inherited
+		if got := v.GetString("app.version"); got != "1.0.0" {
+			t.Errorf("app.version: expected 1.0.0, got %s", got)
+		}
+	})
+
+	t.Run("Local file missing is not an error", func(t *testing.T) {
+		t.Parallel()
+		dir := t.TempDir()
+		writeFile(t, filepath.Join(dir, "config.dev.yaml"), "app:\n  name: dev-app\n")
+
+		l := goscopeconfig.New(
+			goscopeconfig.WithConfigDir(dir),
+			goscopeconfig.WithScope("dev"),
+			goscopeconfig.WithLocalOverride(),
+		)
+		err := l.Load()
+		if err != nil {
+			t.Fatalf("Load should not fail when local file is absent: %v", err)
+		}
+		if got := l.Viper().GetString("app.name"); got != "dev-app" {
+			t.Errorf("app.name: expected dev-app, got %s", got)
+		}
+	})
+
+	t.Run("Local override disabled by default", func(t *testing.T) {
+		t.Parallel()
+		dir := t.TempDir()
+		writeFile(t, filepath.Join(dir, "config.dev.yaml"), "app:\n  name: dev-app\n")
+		writeFile(t, filepath.Join(dir, "config.local.yaml"), "app:\n  name: local-app\n")
+
+		// Without WithLocalOverride() the local file must be ignored.
+		l := goscopeconfig.New(
+			goscopeconfig.WithConfigDir(dir),
+			goscopeconfig.WithScope("dev"),
+		)
+		err := l.Load()
+		if err != nil {
+			t.Fatalf("Load failed: %v", err)
+		}
+		if got := l.Viper().GetString("app.name"); got != "dev-app" {
+			t.Errorf("app.name: expected dev-app (local ignored), got %s", got)
+		}
+	})
+
+	t.Run("Invalid local YAML returns error", func(t *testing.T) {
+		t.Parallel()
+		dir := t.TempDir()
+		writeFile(t, filepath.Join(dir, "config.dev.yaml"), "app:\n  name: dev-app\n")
+		writeFile(t, filepath.Join(dir, "config.local.yaml"), "app: - name: invalid: yaml: content:")
+
+		l := goscopeconfig.New(
+			goscopeconfig.WithConfigDir(dir),
+			goscopeconfig.WithScope("dev"),
+			goscopeconfig.WithLocalOverride(),
+		)
+		err := l.Load()
+		if err == nil {
+			t.Error("Expected error for invalid local yaml content, got nil")
+		}
+	})
+
+	t.Run("Logger reports local override and missing file", func(t *testing.T) {
+		t.Parallel()
+
+		// Case A: local file present — logger must report loaded path and override key.
+		dirA := t.TempDir()
+		writeFile(t, filepath.Join(dirA, "config.dev.yaml"), "app:\n  name: dev-app\n")
+		writeFile(t, filepath.Join(dirA, "config.local.yaml"), "app:\n  name: local-app\n")
+
+		mockA := goscopeconfigmocks.NewMockLogger(t)
+		mockA.EXPECT().Printf(mock.Anything, mock.MatchedBy(func(s string) bool {
+			return strings.Contains(s, "config.local.yaml")
+		})).Once()
+		mockA.EXPECT().Printf(mock.Anything, "Local override", "app.name", mock.Anything, mock.Anything).Maybe()
+		mockA.EXPECT().Printf(mock.Anything, "Override", mock.Anything, mock.Anything, mock.Anything).Maybe()
+		mockA.EXPECT().Printf(mock.Anything).Maybe()
+		mockA.EXPECT().Printf(mock.Anything, mock.Anything).Maybe()
+		mockA.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything).Maybe()
+		mockA.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Maybe()
+		mockA.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Maybe()
+
+		lA := goscopeconfig.New(
+			goscopeconfig.WithConfigDir(dirA),
+			goscopeconfig.WithScope("dev"),
+			goscopeconfig.WithLocalOverride(),
+			goscopeconfig.WithLogger(mockA),
+		)
+		err := lA.Load()
+		if err != nil {
+			t.Fatalf("Load failed: %v", err)
+		}
+
+		// Case B: local file absent — logger must report "skipping" message.
+		dirB := t.TempDir()
+		writeFile(t, filepath.Join(dirB, "config.dev.yaml"), "app:\n  name: dev-app\n")
+
+		mockB := goscopeconfigmocks.NewMockLogger(t)
+		mockB.EXPECT().Printf(mock.Anything, mock.MatchedBy(func(s string) bool {
+			return strings.Contains(s, "config.local")
+		}), mock.Anything).Once()
+		mockB.EXPECT().Printf(mock.Anything).Maybe()
+		mockB.EXPECT().Printf(mock.Anything, mock.Anything).Maybe()
+		mockB.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything).Maybe()
+		mockB.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Maybe()
+		mockB.EXPECT().Printf(mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Maybe()
+
+		lB := goscopeconfig.New(
+			goscopeconfig.WithConfigDir(dirB),
+			goscopeconfig.WithScope("dev"),
+			goscopeconfig.WithLocalOverride(),
+			goscopeconfig.WithLogger(mockB),
+		)
+		err = lB.Load()
+		if err != nil {
+			t.Fatalf("Load failed: %v", err)
+		}
+	})
 }
