@@ -4,6 +4,15 @@
 // It uses spf13/viper under the hood and allows for configuration inheritance
 // by merging a common configuration file with scope-specific overrides.
 //
+// Optionally, a machine-local override file (config.local.yaml / .yml) can be
+// merged on top via WithLocalOverride(). This file is intended for per-developer
+// settings (localhost ports, local DB credentials, mocks, ...) and is typically
+// gitignored. If it does not exist, Load() does not fail.
+//
+// Effective precedence (highest wins):
+//
+//	env vars > config.local > config.[scope] > config.common
+//
 // Basic usage:
 //
 //	loader := goscopeconfig.New()
@@ -12,6 +21,11 @@
 //	}
 //	v := loader.Viper()
 //	fmt.Println(v.GetString("app.name"))
+//
+// With machine-local overrides:
+//
+//	loader := goscopeconfig.New(goscopeconfig.WithLocalOverride())
+//	_ = loader.Load()
 //
 // Using the autoloader:
 //

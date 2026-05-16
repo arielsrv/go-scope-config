@@ -1,0 +1,5 @@
+app:
+  name: my-service-dev
+database:
+  host: db.dev.internal
+

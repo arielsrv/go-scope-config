@@ -1,0 +1,11 @@
+# Copy this file to `config.local.yaml` and tweak it for your local machine.
+# `config.local.yaml` should be in .gitignore so each developer keeps their own.
+#
+# Effective precedence (highest wins):
+#   env vars > config.local > config.[scope] > config.common
+database:
+  host: localhost
+  port: 15432
+features:
+  cache: false
+

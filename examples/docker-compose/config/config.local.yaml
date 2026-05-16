@@ -1,0 +1,4 @@
+db:
+  host: "local-db-host"
+api:
+  key: "local-key"

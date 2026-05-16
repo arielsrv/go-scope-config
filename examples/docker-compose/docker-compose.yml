@@ -15,3 +15,22 @@ services:
       - SCOPE=prod
       - DB_HOST=env-overridden-host
     container_name: goscope-app-prod
+
+  # `local` is treated as just another scope name: the lib looks for
+  # config.local.{yaml,yml} as the REQUIRED scope file. For this to work the
+  # file must live inside the image (the Dockerfile copies ./config).
+  #
+  # NOTE: this is a different concept from WithLocalOverride(), which loads
+  # config.local on TOP of an existing scope as an optional per-developer
+  # override. Do not enable WithLocalOverride() together with SCOPE=local —
+  # the same file would be loaded twice (the second merge is a no-op).
+  app-local:
+    build:
+      context: ../../
+      dockerfile: examples/docker-compose/Dockerfile
+    environment:
+      - SCOPE=local
+    container_name: goscope-app-local
+
+
+

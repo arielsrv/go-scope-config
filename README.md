@@ -12,6 +12,7 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration Merging (Inheritance)](#configuration-merging-inheritance)
+- [Local Overrides (config.local)](#local-overrides-configlocal)
 - [Example File Structure](#example-file-structure)
 - [Code](#code)
   - [Using LoadDefault (Autoloader)](#using-loaddefault-autoloader)
@@ -80,6 +81,60 @@ graph TD
     style Error fill:#fbb,stroke:#333,stroke-width:2px
 ```
 
+### Local Overrides (`config.local`)
+
+For developer-specific tweaks (localhost ports, local DB credentials, mocks,
+feature flags), you usually don't want to share the `dev` scope file — it
+typically points to a shared remote `dev` environment. Use the optional
+`config.local.{yaml,yml}` file instead.
+
+Enable it with `WithLocalOverride()`:
+
+```go
+loader := goscopeconfig.New(
+    goscopeconfig.WithLocalOverride(),
+)
+_ = loader.Load()
+```
+
+Behaviour:
+
+- The local file is **optional**: if it's missing, `Load()` does **not** fail.
+- It is merged **on top of** `config.[scope]`, so it overrides both common and
+  scope values.
+- It is **opt-in**: without `WithLocalOverride()` the file is ignored even if
+  present (backwards-compatible).
+- Recommended workflow: commit a `config.local.example.yaml` template and add
+  `config/config.local.yaml` to your `.gitignore`.
+
+Effective precedence (**highest wins**):
+
+```text
+env vars  >  config.local  >  config.[scope]  >  config.common
+```
+
+Suggested `.gitignore` entry:
+
+```gitignore
+config/config.local.yaml
+config/config.local.yml
+```
+
+#### Blank-import variant
+
+If you use the global Viper via blank import and also want the local override
+to be picked up automatically at `init()` time, import the dedicated subpackage
+instead of (or in addition to) the regular `autoload`:
+
+```go
+import _ "github.com/arielsrv/go-scope-config/autoload/local"
+```
+
+> [!NOTE]
+> The regular `_ "github.com/arielsrv/go-scope-config/autoload"` does **not**
+> load `config.local.yaml` (it stays backwards-compatible). Use the
+> `autoload/local` subpackage to opt in via blank import.
+
 ### Example File Structure
 
 ```text
@@ -87,7 +142,8 @@ graph TD
 ├── config/
 │   ├── config.common.yaml (base values)
 │   ├── config.dev.yaml    (overrides for dev)
-│   └── config.prod.yml    (overrides for prod)
+│   ├── config.prod.yml    (overrides for prod)
+│   └── config.local.yaml  (optional, per-developer, gitignored)
 └── main.go
 ```
 
@@ -230,6 +286,9 @@ The `ConfigLoader` is the core component. It uses options for configuration:
 - [WithScope(string)](config_loader.go): Force a specific scope.
 - [WithScopeEnv(string)](config_loader.go): Custom environment variable for scope.
 - [WithLogger(Logger)](config_loader.go): Provide a logger for loading information.
+- [WithLocalOverride()](config_loader.go): Opt-in to merge an optional
+  `config.local.{yaml,yml}` file on top of the scope-specific configuration
+  (for per-developer overrides).
 
 ### Loader API
 
@@ -245,6 +304,8 @@ You can find complete examples in the `examples/` folder:
 
 - [blank-import](examples/blank-import/main.go): Usage with blank import
   (global Viper).
+- [blank-import-local](examples/blank-import-local/main.go): Blank import that
+  also picks up `config.local.yaml` via `autoload/local`.
 - [autoloader](examples/autoloader/main.go): Quick start using `LoadDefault()`.
 - [automatic](examples/automatic/main.go): Accessing the pre-initialized
   `DefaultViper`.
@@ -256,6 +317,8 @@ You can find complete examples in the `examples/` folder:
   non-standard directory.
 - [merge-common](examples/merge-common/main.go): Demonstrating configuration
   inheritance and overrides.
+- [local-override](examples/local-override/main.go): Per-developer
+  `config.local.yaml` overrides on top of common + scope.
 - [uber-fx](examples/uber-fx/main.go): Integration with the Uber-FX
   dependency injection framework.
 - [docker-compose](examples/docker-compose/main.go): Running inside a container
@@ -275,9 +338,11 @@ Then run the desired example:
 go run simple/main.go
 go run custom-dir/main.go
 go run merge-common/main.go
+go run local-override/main.go
 go run autoloader/main.go
 go run automatic/main.go
 go run blank-import/main.go
+go run blank-import-local/main.go
 go run with-logger/main.go
 go run custom-scope-env/main.go
 go run uber-fx/main.go
@@ -335,8 +400,9 @@ multiple sources, the following priority applies (**highest wins**):
 | Priority        | Source                                       | Example              |
 | --------------- | -------------------------------------------- | -------------------- |
 | **1 — Highest** | Environment variables (`AutomaticEnv`)       | `APP_NAME=myapp`     |
-| **2**           | Scope-specific config file                   | `config.prod.yaml`   |
-| **3 — Lowest**  | Common config file                           | `config.common.yaml` |
+| **2**           | Local override file (opt-in)                 | `config.local.yaml`  |
+| **3**           | Scope-specific config file                   | `config.prod.yaml`   |
+| **4 — Lowest**  | Common config file                           | `config.common.yaml` |
 
 Key-mapping rule: dots (`.`) in YAML keys are replaced by underscores (`_`) in
 environment variable names.
