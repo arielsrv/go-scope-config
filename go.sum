@@ -127,8 +127,8 @@ github.com/bombsimon/wsl/v4 v4.7.0 h1:1Ilm9JBPRczjyUs6hvOPKvd7VL1Q++PL8M0SXBDf+j
 github.com/bombsimon/wsl/v4 v4.7.0/go.mod h1:uV/+6BkffuzSAVYD+yGyld1AChO7/EuLrCF/8xTiapg=
 github.com/bombsimon/wsl/v5 v5.8.0 h1:JTkyfs4yl8SPejrCF2GdABXE+mO1WvM7iUYzRWlsxDs=
 github.com/bombsimon/wsl/v5 v5.8.0/go.mod h1:AbOLsulgkqP4ZnitHf9gwPtCOGlrzkk0jb0uNxRSY0o=
-github.com/boumenot/gocover-cobertura v1.4.0 h1:ACJAt5wRi1HU+P9xNDgzWXgLMEVYUWeOgQWZwH+36kU=
-github.com/boumenot/gocover-cobertura v1.4.0/go.mod h1:Vme2O66tGa5gNpw5kwB+qzpULOnWSmnAHA5NYAOWFv8=
+github.com/boumenot/gocover-cobertura v1.5.0 h1:S2eXZ5snlTl+IGLXiM0litlpy9gf8AU8NagMaxX3nZM=
+github.com/boumenot/gocover-cobertura v1.5.0/go.mod h1:iB1/+oDwfRlsDzABskkid0cNdQ1A+u3O91XUJZWqgtg=
 github.com/breml/bidichk v0.3.3 h1:WSM67ztRusf1sMoqH6/c4OBCUlRVTKq+CbSeo0R17sE=
 github.com/breml/bidichk v0.3.3/go.mod h1:ISbsut8OnjB367j5NseXEGGgO/th206dVa427kR8YTE=
 github.com/breml/errchkjson v0.4.1 h1:keFSS8D7A2T0haP9kzZTi7o26r7kE3vymjZNeNDRDwg=
@@ -195,8 +195,8 @@ github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/denis-tingaikin/go-header v0.5.0 h1:SRdnP5ZKvcO9KKRP1KJrhFR3RrlGuD+42t4429eC9k8=
 github.com/denis-tingaikin/go-header v0.5.0/go.mod h1:mMenU5bWrok6Wl2UsZjy+1okegmwQ3UgWl4V1D8gjlY=
-github.com/dkorunic/betteralign v0.9.2 h1:SWtylzuLqPtZUzK4TGRGu4+dRBxO5ApKbJ2J03pk02I=
-github.com/dkorunic/betteralign v0.9.2/go.mod h1:tt0jh7qNdP5K2DhnY5+izilpksGpIPw3i2GhQdH36Fc=
+github.com/dkorunic/betteralign v0.12.0 h1:gUslxNtb1HPpGfIn/31KqWNf6+7MQic/HdJchxrQMyM=
+github.com/dkorunic/betteralign v0.12.0/go.mod h1:lUAIF0AMxPeo3ZTewn3AyoTRzSQC89YnTzdV9ocpLrA=
 github.com/dlclark/regexp2 v1.12.0 h1:0j4c5qQmnC6XOWNjP3PIXURXN2gWx76rd3KvgdPkCz8=
 github.com/dlclark/regexp2 v1.12.0/go.mod h1:DHkYz0B9wPfa6wondMfaivmHpzrQ3v9q8cnmRbL6yW8=
 github.com/dnephin/pflag v1.0.7 h1:oxONGlWxhmUct0YzKTgrpQv9AUA1wtPBn7zuSjJqptk=
@@ -630,8 +630,6 @@ github.com/securego/gosec/v2 v2.26.1/go.mod h1:57UW4p0uoP3kxoTkhoo3axLdVAi+OWrLg
 github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=
 github.com/sergi/go-diff v1.2.0 h1:XU+rvMAioB0UC3q1MFrIQy4Vo5/4VsRDQQXHsEya6xQ=
 github.com/sergi/go-diff v1.2.0/go.mod h1:STckp+ISIX8hZLjrqAeVduY0gWCT9IjLuqbuNXdaHfM=
-github.com/sirkon/dst v0.26.4 h1:ETxfjyp5JKE8OCpdybyyhzTyQqq/MwbIIcs7kxcUAcA=
-github.com/sirkon/dst v0.26.4/go.mod h1:e6HRc56jU5F2XT6GB8Cyci1Jb5cjX6gLqrm5+T/P7Zo=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
 github.com/sirupsen/logrus v1.6.0/go.mod h1:7uNnSEd1DgxDLC74fIahvMZmmYsHGZGEOFrfsX/uA88=
