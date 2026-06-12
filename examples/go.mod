@@ -3,7 +3,7 @@ module examples
 go 1.26.4
 
 require (
-	github.com/arielsrv/go-scope-config v1.3.4
+	github.com/arielsrv/go-scope-config v1.3.6
 	github.com/spf13/viper v1.21.0
 	go.uber.org/fx v1.24.0
 )
