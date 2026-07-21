@@ -168,7 +168,7 @@ func (r *ConfigLoader) Load() error {
 // flattenMap recursively flattens a nested map into dot-separated keys.
 func flattenMap(prefix string, m map[string]any) map[string]any {
 	result := make(map[string]any)
-	for _, entry := range lo.Entries(m) {
+	for entry := range slices.Values(lo.Entries(m)) {
 		key := lo.Ternary(prefix == "", entry.Key, fmt.Sprintf("%s.%s", prefix, entry.Key))
 		if nested, ok := entry.Value.(map[string]any); ok {
 			result = lo.Assign(result, flattenMap(key, nested))
