@@ -37,7 +37,7 @@ func (_m *MockLogger) EXPECT() *MockLogger_Expecter {
 
 // Printf provides a mock function for the type MockLogger
 func (_mock *MockLogger) Printf(format string, v ...any) {
-	var _ca []interface{}
+	var _ca []any
 	_ca = append(_ca, format)
 	_ca = append(_ca, v...)
 	_mock.Called(_ca...)
@@ -52,9 +52,9 @@ type MockLogger_Printf_Call struct {
 // Printf is a helper method to define mock.On call
 //   - format string
 //   - v ...any
-func (_e *MockLogger_Expecter) Printf(format interface{}, v ...interface{}) *MockLogger_Printf_Call {
+func (_e *MockLogger_Expecter) Printf(format any, v ...any) *MockLogger_Printf_Call {
 	return &MockLogger_Printf_Call{Call: _e.mock.On("Printf",
-		append([]interface{}{format}, v...)...)}
+		append([]any{format}, v...)...)}
 }
 
 func (_c *MockLogger_Printf_Call) Run(run func(format string, v ...any)) *MockLogger_Printf_Call {
