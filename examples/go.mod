@@ -1,6 +1,6 @@
 module examples
 
-go 1.26.4
+go 1.26.5
 
 require (
 	github.com/arielsrv/go-scope-config v1.3.6
