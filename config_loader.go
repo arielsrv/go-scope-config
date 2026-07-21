@@ -169,7 +169,7 @@ func (r *ConfigLoader) Load() error {
 func flattenMap(prefix string, m map[string]any) map[string]any {
 	result := make(map[string]any)
 	for _, entry := range lo.Entries(m) {
-		key := lo.Ternary(prefix == "", entry.Key, prefix+"."+entry.Key)
+		key := lo.Ternary(prefix == "", entry.Key, fmt.Sprintf("%s.%s", prefix, entry.Key))
 		if nested, ok := entry.Value.(map[string]any); ok {
 			result = lo.Assign(result, flattenMap(key, nested))
 		} else {
