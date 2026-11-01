@@ -1,0 +1,6 @@
+app:
+  name: users-api
+  port: 8080
+database:
+  host: localhost
+  pool: 10

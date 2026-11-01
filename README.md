@@ -27,6 +27,7 @@
 - [Configuration Value Priority](#configuration-value-priority)
 - [Commands](#commands)
 - [Environment Variables](#environment-variables)
+- [nullplatform](#nullplatform)
 
 Go package for loading environment-based configurations (`SCOPE`) using [Viper](https://github.com/spf13/viper).
 
@@ -260,6 +261,8 @@ You can find complete examples in the `examples/` folder:
   dependency injection framework.
 - [docker-compose](examples/docker-compose/main.go): Running inside a container
   with Docker Compose, demonstrating environment variable inheritance.
+- [nullplatform](examples/nullplatform/main.go): Selecting the scope from the
+  `NP_SCOPE` parameter injected by nullplatform.
 
 ### Run examples
 
@@ -281,6 +284,7 @@ go run blank-import/main.go
 go run with-logger/main.go
 go run custom-scope-env/main.go
 go run uber-fx/main.go
+go run nullplatform/main.go
 ```
 
 #### Docker Compose Example
@@ -369,3 +373,28 @@ NEW_KEY=value go run main.go   # v.GetString("new.key") → "value"
 | ------------- | ------- | ---------------------------------------------------------------- |
 | `SCOPE`       | `dev`   | Selects the scope config file. Configurable via `WithScopeEnv`. |
 | `<ANY_KEY>`   | -       | Overrides YAML values at runtime (dots replaced by underscores). |
+
+## nullplatform
+
+[nullplatform](https://docs.nullplatform.com/docs/parameters/injected-parameters)
+injects the slug of the scope an application is deployed to in the `NP_SCOPE`
+environment variable. Point the loader at it with `WithScopeEnv`:
+
+```go
+loader := goscopeconfig.New(goscopeconfig.WithScopeEnv("NP_SCOPE"))
+```
+
+The loader reads `config.common.yaml` and merges `config.<NP_SCOPE>.yaml` on
+top. Locally, where `NP_SCOPE` is not set, it falls back to `dev`.
+
+- Every scope slug needs its own file (`config.production.yaml`,
+  `config.production-us.yaml`, ...). A scope without a file makes `Load()`
+  return an error.
+- To configure per environment instead of per scope, use a dimension, which
+  nullplatform injects as `NP_DIMENSION_<NAME>` (for example
+  `WithScopeEnv("NP_DIMENSION_ENVIRONMENT")`).
+- The scope is lowercased before building the file name.
+- The other injected parameters can be read through Viper thanks to
+  `AutomaticEnv`: `v.GetString("np.application")` reads `NP_APPLICATION`.
+
+See [examples/nullplatform](examples/nullplatform/main.go).

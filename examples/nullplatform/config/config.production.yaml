@@ -1,0 +1,4 @@
+# Matches the slug of the nullplatform scope (NP_SCOPE=production).
+database:
+  host: users-db.production.internal
+  pool: 50
