@@ -1,0 +1,3 @@
+# Used locally, where nullplatform does not inject NP_SCOPE.
+database:
+  host: localhost

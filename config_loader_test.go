@@ -322,7 +322,7 @@ func TestDefaultViper(t *testing.T) {
 	_ = goscopeconfig.DefaultViper.GetString("app.name")
 }
 
-func TestLoadDefault(t *testing.T) { //nolint:paralleltest // calls t.Chdir; cannot be parallel in Go 1.26+
+func TestLoadDefault(t *testing.T) {
 	// Create a temporary directory and configuration files for the test
 	tmpDir := t.TempDir()
 
@@ -360,7 +360,7 @@ func TestLoadDefault(t *testing.T) { //nolint:paralleltest // calls t.Chdir; can
 		},
 	)
 
-	t.Run( //nolint:paralleltest // uses t.Chdir global process state; cannot be parallelized
+	t.Run(
 		"LoadDefault with error (missing directory)",
 		func(t *testing.T) {
 			// Change to an empty temporary directory
