@@ -1,9 +1,9 @@
 module examples
 
-go 1.26.5
+go 1.27.3
 
 require (
-	github.com/arielsrv/go-scope-config v1.3.6
+	github.com/arielsrv/go-scope-config v1.4.0
 	github.com/spf13/viper v1.21.0
 	go.uber.org/fx v1.24.0
 )
